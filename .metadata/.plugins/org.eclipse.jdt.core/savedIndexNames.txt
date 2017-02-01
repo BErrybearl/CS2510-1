@@ -1,0 +1,6 @@
+INDEX VERSION 1.129+/Users/echo/Documents/CS2510-1/.metadata/.plugins/org.eclipse.jdt.core
+4236796384.index
+2341425526.index
+950430100.index
+1659696195.index
+310771916.index
