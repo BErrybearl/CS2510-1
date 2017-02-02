@@ -8,20 +8,37 @@ class CakeRecipe {
   double butter;
   double milk;
   
-  CakeRecipe(double flour, double sugar, double eggs, double butter, double milk) {
-    this.flour = this.Constrains(flour, sugar, eggs, butter, milk, "Flour");
-    this.sugar = this.Constrains(flour, sugar, eggs, butter, milk, "Sugar");
-    this.eggs = this.Constrains(flour, sugar, eggs, butter, milk, "Eggs");
-    this.butter = this.Constrains(flour, sugar, eggs, butter, milk, "Butter");
-    this.milk = this.Constrains(flour, sugar, eggs, butter, milk, "Milk");
+  CakeRecipe(double flour, double sugar, double eggs, double butter) {
+    this.flour = this.validNumber1(flour, sugar, "Flour");
+    this.sugar = this.validNumber1(sugar, flour, "Sugar");
+    this.eggs = this.validNumber1(eggs, butter, "Eggs");
+    this.butter = this.validNumber1(butter, eggs, "Butter");
   }
   
-  double Constrains(double f, double s, double e, double b, double m, String type) {
-    if ((f == s) && (e == b) && ((e + m) == f)) {
-      return f;
+  CakeRecipe(double flour, double eggs, double milk) {
+    this.flour = this.validNumber2(flour, eggs, milk, "Flour");
+    this.eggs = this.validNumber2(flour, eggs, milk, "Eggs");
+    this.milk = this.validNumber2(flour, eggs, milk, "Milk");
+  }
+  
+
+  
+  double validNumber1(double a, double b, String type) {
+    if ((a == b)) {
+      return a;
     }
     else {
-      throw new IllegalArgumentException("Bad combo: " + type);
+      throw new IllegalArgumentException("Invalid " + type + ": " + Double.toString(a));
+    }
+  }
+  
+  
+  double validNumber2(double f, double e, double m, String type) {
+    if ((e + m) == f) {
+      return m;
+    }
+    else {
+      throw new IllegalArgumentException("Bad combo:");
     }
   }
 }
