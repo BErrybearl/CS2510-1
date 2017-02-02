@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;CakeRecipe.Constrains1(...)&apos; to &apos;validNumber&apos;&#x0A;- Original project: &apos;Assignment 4&apos;&#x0A;- Original element: &apos;CakeRecipe.Constrains1(...)&apos;&#x0A;- Renamed element: &apos;CakeRecipe.validNumber(...)&apos;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;Constrains1&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;{CakeRecipe.java[CakeRecipe~Constrains1~D~D~D~D~D~QString;" name="validNumber" references="true" stamp="1485993517371" version="1.0"/>
+</session>
