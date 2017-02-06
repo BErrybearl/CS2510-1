@@ -37,11 +37,9 @@ public class CakeRecipe {
   }
 
   /**
-   * This method checks to see if this cake and another cake have the same
-   * recipe.
-   * @param other:This is the other cake that is being tested.
-   * @return: The method returns true if and only if the recipes have the same
-   *          values.
+   * This method checks to see if this cake and another cake have the same recipe.
+   * @param other: This is the other cake that is being tested.
+   * @return: The method returns true if and only if the recipes have the same values.
    */
   public boolean sameRecipe(CakeRecipe other) {
     return (Math.abs(this.flour - other.flour) <= .001)
@@ -54,17 +52,17 @@ public class CakeRecipe {
 }
 
 class ExamplesCakeRecipe {
-
+  
   CakeRecipe r1 = new CakeRecipe(2, 2, 1, 1, 1);
   CakeRecipe r2 = new CakeRecipe(1326, 1326, 238, 238, 1088);
-
+  
   CakeRecipe r3 = new CakeRecipe(312, 136, 136, true);
-
-  // Bad Example
-  // CakeRecipe bad = new CakeRecipe(1, 1, 1, 1, 1);
-
+  
+//  Bad Example
+//  CakeRecipe bad = new CakeRecipe(1, 1, 1, 1, 1);
+  
   boolean testSameRecipe(Tester t) {
-    return t.checkExpect(r1.sameRecipe(r2), false) 
+    return t.checkExpect(r1.sameRecipe(r2), false)
         && t.checkExpect(r1.sameRecipe(r3), false)
         && t.checkExpect(r2.sameRecipe(r3), true);
   }
