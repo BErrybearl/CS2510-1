@@ -167,3 +167,73 @@ java.io.FileNotFoundException: /Users/echo/Documents/CS2510-1/.recommenders/cach
 	at com.google.common.util.concurrent.AbstractIdleService$2$2.run(AbstractIdleService.java:69)
 	at com.google.common.util.concurrent.Callables$3.run(Callables.java:93)
 	at java.lang.Thread.run(Thread.java:745)
+!SESSION 2017-02-06 09:20:55.997 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_102
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_CN
+Framework arguments:  -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+
+!ENTRY org.eclipse.core.jobs 2 2 2017-02-06 18:08:10.067
+!MESSAGE Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: org.eclipse.debug.internal.ui.views.console.ProcessConsole$InputReadJob
+!SESSION 2017-02-07 10:08:41.433 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_102
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_CN
+Framework arguments:  -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+
+!ENTRY org.eclipse.m2e.logback.appender 4 0 2017-02-07 10:16:39.173
+!MESSAGE xcode-select: note: no developer tools were found at '/Applications/Xcode.app', requesting install. Choose an option in the dialog to download the command line developer tools.
+
+
+!ENTRY org.eclipse.m2e.logback.appender 4 0 2017-02-07 10:16:39.219
+!MESSAGE xcode-select: note: no developer tools were found at '/Applications/Xcode.app', requesting install. Choose an option in the dialog to download the command line developer tools.
+
+
+!ENTRY org.eclipse.equinox.p2.engine 4 4 2017-02-07 13:56:25.799
+!MESSAGE An error occurred while collecting items to be installed
+!SUBENTRY 1 org.eclipse.equinox.p2.engine 4 0 2017-02-07 13:56:25.799
+!MESSAGE session context was:(profile=_Applications_Eclipse.app_Contents_Eclipse, phase=org.eclipse.equinox.internal.p2.engine.phases.Collect, operand=, action=).
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: osgi.bundle,javaewah,1.1.6.v20160919-1400
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.core,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.doc,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.mylyn.ui,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.ui,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.jgit,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.jgit.archive,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.egit,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.egit.mylyn,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-02-07 13:56:25.799
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.jgit,4.6.0.201612231935-r
+!SESSION 2017-02-07 13:57:52.091 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_102
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_CN
+Framework arguments:  -product org.eclipse.epp.package.java.product -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.java.product -data file:/Users/echo/Documents/CS2510-1/ -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+
+!ENTRY org.eclipse.m2e.logback.appender 4 0 2017-02-07 13:58:06.700
+!MESSAGE xcode-select: note: no developer tools were found at '/Applications/Xcode.app', requesting install. Choose an option in the dialog to download the command line developer tools.
+
+
+!ENTRY org.eclipse.m2e.logback.appender 4 0 2017-02-07 13:58:06.720
+!MESSAGE xcode-select: note: no developer tools were found at '/Applications/Xcode.app', requesting install. Choose an option in the dialog to download the command line developer tools.
+
+
+!ENTRY org.eclipse.oomph.setup.ui 1 0 2017-02-07 13:58:56.628
+!MESSAGE Setup tasks were performed during startup. See '/Applications/Eclipse.app/Contents/Eclipse/configuration/org.eclipse.oomph.setup/setup.log' for details
