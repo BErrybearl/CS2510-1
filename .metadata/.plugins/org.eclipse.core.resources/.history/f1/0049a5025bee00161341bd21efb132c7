@@ -313,14 +313,12 @@ class ExamplesXML {
   // tag with volume
   IXMLFrag frag3 = new Tagged(this.tag3,
       new ConsLoXMLFrag(this.frag10, new ConsLoXMLFrag(this.txt4, new MtLoXMLFrag())));
-  
   // tag with volume and duration
   IXMLFrag frag4 = new Tagged(this.tag4,
       new ConsLoXMLFrag(this.frag10, new ConsLoXMLFrag(this.txt4, new MtLoXMLFrag())));
   IXMLFrag frag3up = new Tagged(this.tag3up,
       new ConsLoXMLFrag(this.frag10, new ConsLoXMLFrag(this.txt4, new MtLoXMLFrag())));
 
-  
   ILoXMLFrag xml1 = new ConsLoXMLFrag(this.txt1, new MtLoXMLFrag());
 
   ILoXMLFrag xml2 = new ConsLoXMLFrag(this.txt2,
@@ -379,6 +377,33 @@ class ExamplesXML {
   boolean testUpdateAttribute(Tester t) {
     return t.checkExpect(this.xml1.updateAttribute("volume", "30db"), this.xml1)
         && t.checkExpect(this.xml4.updateAttribute("volume", "50db"), this.xml4up);
+
+    // Tagged empty = new Tagged(this.ept, new MtLoXMLFrag());
+
+    // Tagged tagged1 = new Tagged(this.tag1, new MtLoXMLFrag());
+    // Tagged tagged2 = new Tagged(this.tag2, new ConsLoXMLFrag(this.txt2, new
+    // MtLoXMLFrag()));
+    // Tagged tagged3 = new Tagged(this.tag3, new ConsLoXMLFrag(this.txt3, new
+    // ConsLoXMLFrag(this.txt1, new MtLoXMLFrag())));
+    // Tagged tagged4 = new Tagged(this.tag4, new ConsLoXMLFrag(this.txt4, new
+    // ConsLoXMLFrag(this.txt2, new MtLoXMLFrag())));
+    // Tagged tagged3up = new Tagged(this.tag3up, new ConsLoXMLFrag(this.txt3,
+    // new
+    // ConsLoXMLFrag(this.txt1, new MtLoXMLFrag())));
+
+    /*
+     * IXMLFrag frag1 = this.txt1;
+     * 
+     * IXMLFrag frag2 = new Tagged(this.tag2, new ConsLoXMLFrag(this.txt2, new
+     * MtLoXMLFrag()));
+     * 
+     * IXMLFrag frag3 = new Tagged(this.tag3, new ConsLoXMLFrag(this.txt3, new
+     * ConsLoXMLFrag(this.txt1, new MtLoXMLFrag()))); IXMLFrag frag4 = new
+     * Tagged(this.tag4, new ConsLoXMLFrag(this.txt4, new
+     * ConsLoXMLFrag(this.txt2, new MtLoXMLFrag()))); IXMLFrag frag3up = new
+     * Tagged(this.tag3up, new ConsLoXMLFrag(this.txt3, new
+     * ConsLoXMLFrag(this.txt1, new MtLoXMLFrag())));
+     */
 
   }
 }

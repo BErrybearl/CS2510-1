@@ -341,7 +341,7 @@ interface ILoXMLFrag {
   // given value
   ILoXMLFrag updateAttribute(String attName, String attValue);
 
-  // to determine if this XML is the same as the given XML
+  // to determine if this ILoXMLFrag is the same as the given ILoXMLFrag
   boolean sameXMLDoc(ILoXMLFrag given);
 
   // to determine if this ILoXMLFrag is the same as the given MtLoXMLFrag
@@ -387,7 +387,7 @@ class MtLoXMLFrag implements ILoXMLFrag {
     return this;
   }
 
-  // to determine if this XML is the same as the given XML
+  // to determine if this ILoXMLFrag is the same as the given ILoXMLFrag
   public boolean sameXMLDoc(ILoXMLFrag given) {
     return given.sameMtLoXMLFrag(this);
   }
@@ -454,7 +454,6 @@ class ConsLoXMLFrag implements ILoXMLFrag {
     return true;
   }
 
-  // to determine if this XML is the same as the given XML
   public boolean sameXMLDoc(ILoXMLFrag given) {
     return given.sameConsLoXMLFrag(this);
   }

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;ILoXMLFrag.sameILoXMLFrag(...)&apos; to &apos;sameXMLDoc&apos;&#x0A;- Original project: &apos;Assignment 5&apos;&#x0A;- Original element: &apos;ILoXMLFrag.sameILoXMLFrag(...)&apos;&#x0A;- Renamed element: &apos;ILoXMLFrag.sameXMLDoc(...)&apos;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;sameILoXMLFrag&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;{XML.java[ILoXMLFrag~sameILoXMLFrag~QILoXMLFrag;" name="sameXMLDoc" references="true" stamp="1486593849458" version="1.0"/>
+</session>
