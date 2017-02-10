@@ -20,7 +20,7 @@ class Dog {
 
 class ExamplesDog {
 
-  Dog d1 = new Dog("Hufflepuff", "Wheaten Terrier", 2012, "TX", true);
-  Dog d2 = new Dog("Pearl", "Labrador Retriever", 2016, "MA", false);
+  Dog huffle = new Dog("Hufflepuff", "Wheaten Terrier", 2012, "TX", true);
+  Dog pearl = new Dog("Pearl", "Labrador Retriever", 2016, "MA", false);
 
 }

@@ -2,11 +2,11 @@
 // Changzong Liu
 // changzongliu
 
-interface IIcecream {
+interface IIceCream {
 
 }
 
-class EmptyServing implements IIcecream {
+class EmptyServing implements IIceCream {
   boolean cone;
 
   EmptyServing(boolean cone) {
@@ -15,11 +15,11 @@ class EmptyServing implements IIcecream {
 
 }
 
-class Scooped implements IIcecream {
-  IIcecream more;
+class Scooped implements IIceCream {
+  IIceCream more;
   String flavor;
 
-  Scooped(IIcecream more, String flavor) {
+  Scooped(IIceCream more, String flavor) {
     this.more = more;
     this.flavor = flavor;
   }
@@ -27,15 +27,15 @@ class Scooped implements IIcecream {
 
 class ExamplesIceCream {
 
-  IIcecream cup = new EmptyServing(false);
-  IIcecream flavor1 = new Scooped(this.cup, "mint chip");
-  IIcecream flavor2 = new Scooped(this.flavor1, "coffee");
-  IIcecream flavor3 = new Scooped(this.flavor2, "black raspberry");
-  IIcecream order1 = new Scooped(this.flavor3, "caramel swirl");
+  IIceCream cup = new EmptyServing(false);
+  IIceCream flavor1 = new Scooped(this.cup, "mint chip");
+  IIceCream flavor2 = new Scooped(this.flavor1, "coffee");
+  IIceCream flavor3 = new Scooped(this.flavor2, "black raspberry");
+  IIceCream order1 = new Scooped(this.flavor3, "caramel swirl");
 
-  IIcecream cone = new EmptyServing(true);
-  IIcecream flavor4 = new Scooped(this.cone, "chocolate");
-  IIcecream flavor5 = new Scooped(this.flavor1, "vanilla");
-  IIcecream order2 = new Scooped(this.flavor2, "bstrawberry");
+  IIceCream cone = new EmptyServing(true);
+  IIceCream flavor4 = new Scooped(this.cone, "chocolate");
+  IIceCream flavor5 = new Scooped(this.flavor1, "vanilla");
+  IIceCream order2 = new Scooped(this.flavor2, "bstrawberry");
 
 }
