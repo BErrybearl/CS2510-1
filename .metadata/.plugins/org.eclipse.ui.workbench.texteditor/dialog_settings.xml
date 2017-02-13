@@ -2,29 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="IceC" key="selection"/>
+		<item value="canEat" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="icec"/>
-			<item value="ice"/>
-			<item value="World"/>
-			<item value="Worl"/>
-			<item value="abstract"/>
-			<item value="bigbang"/>
-			<item value="Item"/>
-			<item value="same"/>
+			<item value="canEat"/>
+			<item value="Player"/>
+			<item value="eat"/>
+			<item value="end"/>
+			<item value="ontick"/>
+			<item value="place"/>
+			<item value="Place"/>
+			<item value="placeimage"/>
 		</list>
 		<list key="replacehistory">
+			<item value="player"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="290" key="DIALOG_WIDTH"/>
 		<item value="1|.SF NS Text|11.0|0|COCOA|1|.SFNSText" key="DIALOG_FONT_NAME"/>
 		<item value="409" key="DIALOG_HEIGHT"/>
-		<item value="760" key="DIALOG_X_ORIGIN"/>
-		<item value="117" key="DIALOG_Y_ORIGIN"/>
+		<item value="447" key="DIALOG_X_ORIGIN"/>
+		<item value="177" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

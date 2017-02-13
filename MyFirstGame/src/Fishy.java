@@ -252,12 +252,11 @@ class ConsLoFish implements ILoFish {
     }
   }
 
-  @Override
   public int getRadius() {
-    return this.first.radius;
+    
+  return this.first.radius;
   }
 
-  @Override
   public boolean canEatAny(Fish given) {
     
    return given.canEat(first) || rest.canEatAny(given);
