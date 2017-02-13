@@ -8,6 +8,6 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="tester.Main"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="BlobExamples"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="FishyExamples"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="MyFirstGame"/>
 </launchConfiguration>

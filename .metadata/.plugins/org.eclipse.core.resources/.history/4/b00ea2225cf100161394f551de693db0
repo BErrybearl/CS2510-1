@@ -1,0 +1,267 @@
+import java.awt.Color;
+import java.util.Random;
+
+import tester.*;
+import javalib.funworld.*;
+import javalib.worldimages.*;
+
+class Fish {
+
+  Posn center;
+  int radius;
+  Color col;
+
+  /** The constructor */
+  Fish(Posn center, int radius, Color col) {
+    this.center = center;
+    this.radius = radius;
+    this.col = col;
+  }
+
+  WorldImage fishImage() {
+    return new CircleImage(this.radius, "solid", this.col);
+  }
+
+  /**
+   * move this blob 5 pixels in the direction given by the ke or change its
+   * color to Green, Red or Yellow
+   */
+  public Fish moveFish(String ke) {
+    if (ke.equals("right")) {
+      return new Fish(new Posn(this.center.x + 5, this.center.y), this.radius, this.col);
+    }
+    else if (ke.equals("left")) {
+      return new Fish(new Posn(this.center.x - 5, this.center.y), this.radius, this.col);
+    }
+    else if (ke.equals("up")) {
+      return new Fish(new Posn(this.center.x, this.center.y - 5), this.radius, this.col);
+    }
+    else if (ke.equals("down")) {
+      return new Fish(new Posn(this.center.x, this.center.y + 5), this.radius, this.col);
+    }
+    // change the color to Y, G, R
+    else if (ke.equals("Y")) {
+      return new Fish(this.center, this.radius, Color.YELLOW);
+    }
+    else if (ke.equals("G")) {
+      return new Fish(this.center, this.radius, Color.GREEN);
+    }
+    else if (ke.equals("R")) {
+      return new Fish(this.center, this.radius, Color.RED);
+
+    }
+    else
+      return this;
+  }
+
+  // fish is outside the bound or not
+  public boolean ousideBound(int width, int height) {
+    return this.center.x < 0 || this.center.x > width || this.center.y < 0
+        || this.center.y > height;
+  }
+
+  public Fish loopFish() {
+    if (this.center.x <= 0) {
+      return new Fish(new Posn(200, this.center.y), this.radius, this.col);
+    }
+    else if (this.center.x >= 200) {
+      return new Fish(new Posn(0, this.center.y), this.radius, this.col);
+    }
+    else {
+      return this;
+    }
+  }
+
+  public boolean isEatable(Fish given) {
+    if (this.radius > given.radius) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  public int distance(OtherFish other) {
+    int xDifference = this.center.x - other.center.x;
+    int yDifference = this.center.y - other.center.y;
+
+    return (int) Math.sqrt(xDifference * xDifference + yDifference * yDifference);
+  }
+
+}
+
+class OtherFish {
+
+  Posn center;
+  int radius;
+  Color col;
+
+  OtherFish(Posn center, int radius, Color col) {
+    this.center = center;
+    this.radius = radius;
+    this.col = col;
+  }
+
+  WorldImage fishImage() {
+    return new CircleImage(this.radius, "solid", this.col);
+
+  }
+
+  public boolean isEatable(Fish given) {
+    if (this.radius <= given.radius) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  public OtherFish crossScene(int n) {
+    if (this.center.x <= 0) {
+      return new OtherFish(new Posn(this.center.x + this.randomInt(n), this.center.y), this.radius,
+          this.col);
+    }
+    else if (this.center.x >= 200) {
+      return new OtherFish(new Posn(this.center.x - this.randomInt(n), this.center.y), this.radius,
+          this.col);
+    }
+    return this;
+  }
+
+  public int randomInt(int n) {
+    return -n + (new Random().nextInt(2 * n + 1));
+  }
+
+  int getRadius() {
+    return this.radius;
+  }
+
+}
+
+interface ILoFish {
+  ILoFish crossScene(int n);
+
+  boolean compareSize(Fish given);
+
+}
+
+class MtLoFish implements ILoFish {
+
+  public ILoFish crossScene(int n) {
+    return null;
+  }
+
+  @Override
+  public boolean compareSize(Fish given) {
+    // TODO Auto-generated method stub
+    return true;
+  }
+
+}
+
+class ConsLoFish implements ILoFish {
+  OtherFish first;
+  ILoFish rest;
+
+  ConsLoFish(OtherFish first, ILoFish rest) {
+    this.first = first;
+    this.rest = rest;
+  }
+
+  public ILoFish crossScene(int n) {
+    return new ConsLoFish(this.first.crossScene(n), this.rest.crossScene(n));
+  }
+
+  @Override
+  public boolean compareSize(Fish given) {
+    return (this.first.getRadius() < given.radius) && this.rest.compareSize(given);
+  }
+
+}
+
+class FishyWorld extends World {
+
+  int width = 200;
+  int height = 200;
+  Fish Player;
+  ILoFish otherfish;
+
+  public FishyWorld(Fish Player, ILoFish fishes) {
+    super();
+    this.Player = Player;
+    this.otherfish = fishes;
+  }
+
+  /** Move the Blob when the player presses a key */
+  public World onKeyEvent(String ke) {
+    if (ke.equals("x"))
+      return this.endOfWorld("Goodbye");
+    else
+      return new FishyWorld(this.Player.moveFish(ke), otherfish);
+  }
+
+  public World onTick() {
+    return new FishyWorld(this.Player, this.otherfish.crossScene(5));
+  }
+
+  public WorldEnd worldEnds() {
+    if (otherfish.compareSize(Player)) {
+      return new WorldEnd(true, this.lastScene("You Win"));
+    }
+    else {
+      return new WorldEnd(false, this.makeScene());
+    }
+  }
+
+  /** produce the last image of this world by adding text to the image */
+  public WorldScene lastScene(String s) {
+    return this.makeScene().placeImageXY(new TextImage(s, Color.red), 100, 40);
+  }
+
+  public Fish eatFish(OtherFish other) {
+    if (Player.distance(other) <= Player.radius + other.radius) {
+      return new Fish(Player.center, Player.radius + 2, Player.col);
+    }
+
+    return new Fish(Player.center, Player.radius, Player.col);
+
+  }
+  
+  
+  Fish p1 = new Fish(new Posn(100, 100), 5, Color.black);
+
+  OtherFish f1 = new OtherFish(new Posn(0, 100), 2, Color.yellow);
+  OtherFish f2 = new OtherFish(new Posn(200, 50), 5, Color.yellow);
+  OtherFish f3 = new OtherFish(new Posn(200, 150), 10, Color.yellow);
+
+  
+  
+  @Override
+  public WorldScene makeScene() {
+    return this
+        .getEmptyScene()
+        .placeImageXY(p1.fishImage(), p1.center.x, p1.center.y)
+        .placeImageXY(f1.fishImage(), f1.center.x, f1.center.y)
+        .placeImageXY(f1.fishImage(), f2.center.x, f2.center.y)
+        .placeImageXY(f1.fishImage(), f3.center.x, f3.center.y);
+
+    
+  }
+
+}
+
+class FishyExamples {
+  
+  Fish p1 = new Fish(new Posn(100, 100), 5, Color.black);
+
+  OtherFish f1 = new OtherFish(new Posn(0, 100), 2, Color.yellow);
+  OtherFish f2 = new OtherFish(new Posn(200, 50), 5, Color.yellow);
+  OtherFish f3 = new OtherFish(new Posn(200, 150), 10, Color.yellow);
+
+  ILoFish o1 = new ConsLoFish(this.f1,
+      new ConsLoFish(this.f2, new ConsLoFish(this.f3, new MtLoFish())));
+  
+  FishyWorld w1 = new FishyWorld(p1, o1);
+  
+  boolean runAnimation1 = this.w1.bigBang(200, 200, 0.5);
+}
