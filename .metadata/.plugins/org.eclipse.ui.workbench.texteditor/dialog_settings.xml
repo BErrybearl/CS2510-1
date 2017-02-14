@@ -2,20 +2,20 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="canEat" key="selection"/>
+		<item value="small" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="small"/>
+			<item value="lastWorld"/>
 			<item value="canEat"/>
 			<item value="Player"/>
 			<item value="eat"/>
 			<item value="end"/>
 			<item value="ontick"/>
 			<item value="place"/>
-			<item value="Place"/>
-			<item value="placeimage"/>
 		</list>
 		<list key="replacehistory">
 			<item value="player"/>

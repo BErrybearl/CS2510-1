@@ -1,0 +1,32 @@
+Our Fishy game consists of:
+
+* Fish: Representation of the player fish.  It contains code to:
+	* Move the fish based on key-events
+	* Check if the Fish can eat an OtherFish
+	* Grow the fish if it eats an OtherFish
+
+* OtherFish: Representation of an enemy fish.  It contains code to:
+	     * Move itself based on random number generation and direction
+	     * Check if the OtherFish can eat a Fish
+	     * Provide its radius 
+
+* AFish: Abstract class that pulls similar code from Fish and OtherFish.  It contains code to:
+	 * Produce an image of the AFish
+	 * Compute the distance from this AFish to another AFish
+
+* ILoFish: Interface for lists of OtherFish.  It contains code to:
+	    * Move all of the OtherFish in the list every time the clock ticks
+	    * Return the radius of an OtherFish that has been eaten
+	    * Check if all the OtherFish in the list are smaller than the given AFish
+	    * Produce an image of the list of OtherFish
+	    * Determine if any fish in the list can be eaten by the given AFish
+	    * Remove OtherFish that have been eaten from the list
+	    * Determine if any OtherFish in the list can eat the given AFish
+
+* MtLoFish: Represents an empty list of OtherFish.  It has all the functionality described by ILoFish.
+
+* ConsLoFish: Represents a non-empty list of OtherFish.  It has all the functionality described by ILoFish.
+
+* FishyWorld: Responsible for the creation of the game and handles any events that affect the running game.
+
+* FishyExamples: Contains examples of Fish, OtherFish, and lists of OtherFish.  It also contains the tester methods used to check the game's functionality.
