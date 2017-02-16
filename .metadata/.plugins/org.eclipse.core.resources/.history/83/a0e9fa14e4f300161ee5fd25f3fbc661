@@ -1,0 +1,90 @@
+interface ILo {
+  boolean isValid();
+  
+  Segment startat();
+  
+  Segment getfirst();
+
+  Segment getlast();
+}
+
+class one implements ILo {
+  Segment leg;
+  
+  one(Segment leg) {
+    this.leg = leg;
+  }
+
+  public boolean isValid() {
+    return true;
+  }
+
+  @Override
+  public Segment startat() {
+    return leg;
+  }
+  
+  public Segment getfirst() {
+    return leg;
+  }
+  
+  public Segment getlast() {
+    return leg;
+  }
+}
+
+class Cons implements ILo {
+  Segment first;
+  ILo rest;
+  
+  Cons(Segment first, ILo rest) {
+    this.first = first;
+    this.rest = rest;
+  }
+
+  @Override
+  public boolean isValid() {
+    if (first.endsAt().equals(rest.getfirst().startsAt())) {
+      return this.rest.isValid();
+    }
+    else {
+      return false;
+    }
+  }
+  
+  public Segment getfirst() {
+    return first;
+  }
+  
+  public Segment getlast() {
+    return this.rest.getlast();
+  }
+
+  @Override
+  public Segment startat() {
+    if (this.isValid()) {
+     throw new RuntimeException("Invalid route"); 
+    }
+    else {
+      return new Segment(this.first.from, this.rest.getlast().to);
+    }
+  }
+}
+
+class Segment {
+  String from;
+  String to;
+  
+  Segment(String from, String to) {
+    this.from = from;
+    this.to= to;
+  }
+  
+  String startsAt() {
+    return from;
+  }
+  
+  String endsAt() {
+    return to;
+  }
+}
