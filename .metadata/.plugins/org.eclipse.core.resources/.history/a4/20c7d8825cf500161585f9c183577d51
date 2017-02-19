@@ -1,0 +1,45 @@
+interface IComparator<T> {
+    // Returns a negative number if t1 comes before t2 in this ordering
+    // Returns zero              if t1 is the same as t2 in this ordering
+    // Returns a positive number if t1 comes after t2 in this ordering
+    int compare(T t1, T t2);
+}
+
+class StringLengthCompGen implements IComparator<String> {
+
+  public int compare(String t1, String t2) {
+    return t2.length() - t1.length() ;
+  }
+  
+}
+
+class StringZetabetCompGen implements IComparator<String> {
+
+  
+  public int  compare(String t1, String t2) {
+   return  t1.compareTo(t2);
+
+  }
+  
+}
+
+interface IList<T> {
+  
+}
+
+class MtList<T> implements IList<T> {
+  
+}
+
+class ConsList<T> implements IList<T> {
+    T first;
+    IList<T> rest;
+  ConsList<T>(T first, IList<T> rest) {
+    
+    this.first = first;
+    this.rest = rest;
+  }
+}
+
+
+

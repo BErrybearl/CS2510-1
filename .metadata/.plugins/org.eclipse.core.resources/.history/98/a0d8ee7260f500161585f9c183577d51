@@ -1,0 +1,181 @@
+import tester.*;
+
+interface IComparator<T> {
+    // Returns a negative number if t1 comes before t2 in this ordering
+    // Returns zero              if t1 is the same as t2 in this ordering
+    // Returns a positive number if t1 comes after t2 in this ordering
+    int compare(T t1, T t2);
+}
+
+class StringLengthCompGen implements IComparator<String> {
+
+  public int compare(String t1, String t2) {
+    return t2.length() - t1.length() ;
+  }
+  
+}
+
+class StringZetabetCompGen implements IComparator<String> {
+
+  
+  public int  compare(String t1, String t2) {
+   return  t1.compareTo(t2);
+
+  }
+  
+}
+
+interface IList<T> {
+  
+  boolean isSorted(IStringsCompare c);
+
+  boolean isSortedHelp(T s, IComparator<T> c);
+
+  IList<T> merge(IList<T> given, IComparator<T> c);
+
+  IList<T> mergeHelper(T given, IComparator<T> c);
+
+  IList<T> insert(T given, IComparator<T> c);
+
+  ILoString sort(IComparator<T> c);
+  
+  boolean sameList(IList<T> given);
+  
+  boolean sameMt(MtList<T> given);
+  
+  boolean sameCons(ConsList<T> given);
+  
+}
+
+class MtList<T> implements IList<T> {
+
+  @Override
+  public boolean isSorted(IStringsCompare c) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isSortedHelp(T s, IComparator<T> c) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public IList<T> merge(IList<T> given, IComparator<T> c) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public IList<T> mergeHelper(T given, IComparator<T> c) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public IList<T> insert(T given, IComparator<T> c) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public ILoString sort(IComparator<T> c) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean sameList(IList<T> given) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean sameMt(MtList<T> given) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean sameCons(ConsList<T> given) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+
+  
+}
+
+class ConsList<T> implements IList<T> {
+   
+  T first;  
+  IList<T> rest;
+  
+    ConsList(T first, IList<T> rest) {
+    
+    this.first = first;
+    this.rest = rest;
+  }
+
+    @Override
+    public boolean isSorted(IStringsCompare c) {
+      // TODO Auto-generated method stub
+      return false;
+    }
+
+    @Override
+    public boolean isSortedHelp(T s, IComparator<T> c) {
+      // TODO Auto-generated method stub
+      return false;
+    }
+
+    @Override
+    public IList<T> merge(IList<T> given, IComparator<T> c) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public IList<T> mergeHelper(T given, IComparator<T> c) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public IList<T> insert(T given, IComparator<T> c) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public ILoString sort(IComparator<T> c) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public boolean sameList(IList<T> given) {
+      // TODO Auto-generated method stub
+      return false;
+    }
+
+    @Override
+    public boolean sameMt(MtList<T> given) {
+      // TODO Auto-generated method stub
+      return false;
+    }
+
+    @Override
+    public boolean sameCons(ConsList<T> given) {
+      // TODO Auto-generated method stub
+      return false;
+    }
+
+  
+    
+    
+}
+
+
+

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete 3 elements from project &apos;Assignment 6&apos;&#x0A;- Original project: &apos;Assignment 6&apos;&#x0A;- Original elements:&#x0A;     ABST.buildTree(...)&#x0A;     Leaf.buildTree(...)&#x0A;     Node.buildTree(...)" description="Delete elements" element1="/src&lt;{ABST.java[ABST~buildTree~QABST\&lt;QBook;&gt;;" element2="/src&lt;{ABST.java[Leaf~buildTree~QABST\&lt;QBook;&gt;;" element3="/src&lt;{ABST.java[Node~buildTree~QABST\&lt;QBook;&gt;;" elements="3" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1487462619985" subPackages="false" version="1.0"/>
+</session>

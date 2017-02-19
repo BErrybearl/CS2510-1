@@ -2,22 +2,26 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="small" key="selection"/>
+		<item value="insert" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="small"/>
-			<item value="lastWorld"/>
-			<item value="canEat"/>
-			<item value="Player"/>
-			<item value="eat"/>
-			<item value="end"/>
-			<item value="ontick"/>
-			<item value="place"/>
+			<item value="insert"/>
+			<item value="sort"/>
+			<item value="merge"/>
+			<item value="ConsLoString"/>
+			<item value="isMt"/>
+			<item value="ILoString"/>
+			<item value="Empty"/>
+			<item value="Cons"/>
 		</list>
 		<list key="replacehistory">
+			<item value="ConsList&lt;String&gt;"/>
+			<item value="IList&lt;T&gt;"/>
+			<item value="MtList"/>
+			<item value="ConsList"/>
 			<item value="player"/>
 		</list>
 	</section>
@@ -25,7 +29,7 @@
 		<item value="290" key="DIALOG_WIDTH"/>
 		<item value="1|.SF NS Text|11.0|0|COCOA|1|.SFNSText" key="DIALOG_FONT_NAME"/>
 		<item value="409" key="DIALOG_HEIGHT"/>
-		<item value="447" key="DIALOG_X_ORIGIN"/>
-		<item value="177" key="DIALOG_Y_ORIGIN"/>
+		<item value="769" key="DIALOG_X_ORIGIN"/>
+		<item value="97" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

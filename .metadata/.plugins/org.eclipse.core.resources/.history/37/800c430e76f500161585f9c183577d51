@@ -1,0 +1,318 @@
+import tester.*;
+
+// to represent the Comparator class 
+interface IStringsCompare {
+
+  // to determine whether String1 comes before String2
+  boolean comesBefore(String s1, String s2);
+}
+
+// represents a function that compares Strings reverse-lexicographically
+class StringZetabetComp implements IStringsCompare {
+
+  /* METHODS: this.comesBefore(String s1, String s2)  -- boolean */
+
+  // to compare the given Strings reverse-lexicographically
+  public boolean comesBefore(String s1, String s2) {
+    return s1.compareTo(s2) >= 0;
+  }
+}
+
+// represents a function that compares Strings by length
+class StringLengthComp implements IStringsCompare {
+
+  /* METHODS: this.comesBefore(String s1, String s2)  -- boolean */
+
+  // to determine if the first given String has the same
+  // length or is shorter than the second given String
+  public boolean comesBefore(String s1, String s2) {
+    return s1.length() <= s2.length();
+  }
+}
+
+// represent a List-of Strings
+interface ILoString {
+
+  // determine if this ILoString is sorted
+  boolean isSorted(IStringsCompare c);
+
+  // help determine if this ILoString is sorted
+  boolean isSortedHelp(String s, IStringsCompare c);
+
+  // merge this ILoString with the given ILoString
+  ILoString merge(ILoString given, IStringsCompare c);
+
+  // help merge this ILoString with the given ILoString
+  ILoString mergeHelper(String given, IStringsCompare c);
+
+  // insert the given String into this ILoString
+  ILoString insert(String given, IStringsCompare c);
+
+  // sort this ILoString
+  ILoString sort(IStringsCompare c);
+
+  // determine if this ILoString is the same as the given ILoString
+  boolean sameList(ILoString given);
+
+  // determine if this ILoString is the same MtLoString as the given MtLoString
+  boolean sameMt(MtLoString given);
+
+  // determine if this ILoString is the same ConsLoString as the given ConsLoString
+  boolean sameCons(ConsLoString given);
+
+}
+
+// class representing an empty List-of Strings
+class MtLoString implements ILoString {
+
+  /* METHODS:
+   * this.isSorted(IStringsCompare c)                   -- boolean
+   * this.isSortedHelp(String, IStringsCompare c)       -- boolean
+   * this.merge(ILoString given, IStringsCompare c)     -- ILoString
+   * this.mergeHelper(String given, IStringsCompare c)  -- ILoString
+   * this.insert(String given, IStringsCompare c)       -- ILoString
+   * this.sort(StringsCompare c)                        -- ILoString
+   * this.sameList(ILoString given)                     -- boolean
+   * this.sameMt(MtLoString given)                      -- boolean
+   * this.sameCons(ConsLoString given)                  -- boolean
+   */
+
+  // determine if this MtLoString is sorted
+  public boolean isSorted(IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    return true;
+  }
+
+  // help determine if this MtLoString is sorted
+  public boolean isSortedHelp(String s, IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    return true;
+  }
+
+  // merge this MTLoString with the given MtLoString
+  public ILoString merge(ILoString given, IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    return given;
+  }
+
+  // help merge this MTLoString with the given MtLoString
+  public ILoString mergeHelper(String given, IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    return this;
+  }
+
+  // insert the given String into this MtLoString
+  public ILoString insert(String given, IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    return new ConsLoString(given, this);
+  }
+
+  // sort this MtLoString
+  public ILoString sort(IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    return this;
+  }
+
+  // determine if this MtLoString is the same as the given ILoString
+  public boolean sameList(ILoString given) {
+    /* METHODS OF PARAMETERS: Methods of ILoString */
+    return given.sameMt(this);
+  }
+
+  // determine if this MtLoString is the same MtLoString as the given MtLoString
+  public boolean sameMt(MtLoString given) {
+    /* METHODS OF PARAMETERS: Same as above template */
+    return true;
+  }
+
+  // determine if this MtLoString is the same ConsLoString as the given ConsLoString
+  public boolean sameCons(ConsLoString given) {
+    /* METHODS OF PARAMETERS: Same as ConsLoString */
+    return false;
+  }
+}
+
+//class representing a List-of Strings
+class ConsLoString implements ILoString {
+
+  String first;
+  ILoString rest;
+
+  // the constructor
+  ConsLoString(String first, ILoString rest) {
+    this.first = first;
+    this.rest = rest;
+  }
+
+  /* METHODS:
+   * this.isSorted(IStringsCompare c)                     -- boolean
+   * this.isSortedHelp(String, IStringsCompare c)         -- boolean
+   * this.merge(ILoString given, IStringsCompare c)       -- ILoString
+   * rest.mergeCons(ConsLoString los, IStringsCompare c)  -- ILoString
+   * this.mergeHelper(String given, IStringsCompare c)    -- ILoString
+   * this.insert(String given, IStringsCompare c)         -- ILoString
+   * this.sort(StringsCompare c)                          -- ILoString
+   * this.sameList(ILoString given)                       -- boolean
+   * this.sameMt(MtLoString given)                        -- boolean
+   * this.sameCons(ConsLoString given)                    -- boolean
+   * rest.isSorted(IStringsCompare c)                     -- boolean
+   * rest.isSortedHelp(String, IStringsCompare c)         -- boolean
+   * rest.merge(ILoString given, IStringsCompare c)       -- ILoString
+   * rest.mergeCons(ConsLoString los, IStringsCompare c)  -- ILoString
+   * rest.mergeHelper(String given, IStringsCompare c)    -- ILoString
+   * rest.insert(String given, IStringsCompare c)         -- ILoString
+   * rest.sort(StringsCompare c)                          -- ILoString
+   * rest.sameList(ILoString given)                       -- boolean
+   * rest.sameMt(MtLoString given)                        -- boolean
+   * rest.sameCons(ConsLoString given)                    -- boolean
+   */
+
+  // determine if this ConsLoString is sorted
+  public boolean isSorted(IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    return this.rest.isSortedHelp(first, c);
+  }
+
+  // help determine if this ConsLoString is sorted
+  public boolean isSortedHelp(String s, IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    return c.comesBefore(s, first) && this.rest.isSorted(c);
+  }
+
+  // merge this ConsLoString with the given MtLoString
+  public ILoString merge(ILoString given, IStringsCompare c) {
+    /* METHODS OF PARAMETERS: Methods of ILoString and c.comesBefore(String s1, String s2) */
+    if (given instanceof MtLoString) {
+      return this;
+    }
+    else {
+      return this.mergeCons((ConsLoString) given, (IStringsCompare) c);
+    }
+  }
+
+  // merge this ConsLoString with the given ConsLoString
+  ILoString mergeCons(ConsLoString los, IStringsCompare c) {
+    /* METHODS OF PARAMETERS: Methods of this ConsLoString and c.comesBefore(String s1, String s2) */
+    return this.mergeHelper(los.first, c).merge(los.rest, c);
+  }
+
+  // help merge this ConsLoString with the given MtLoString
+  public ILoString mergeHelper(String given, IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    if (c.comesBefore(given, this.first)) {
+      return new ConsLoString(given, this);
+    }
+    else {
+      return new ConsLoString(this.first, this.rest.mergeHelper(given, c));
+    }
+  }
+
+  // insert the given String into this ConsLoString
+  public ILoString insert(String given, IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    if (c.comesBefore(given, first)) {
+      return new ConsLoString(given, this);
+    }
+    else {
+      return new ConsLoString(this.first, this.rest.insert(given, c));
+    }
+  }
+
+  // sort this ConsLoString
+  public ILoString sort(IStringsCompare c) {
+    /* METHODS OF PARAMETERS: c.comesBefore(String s1, String s2)   -- boolean */
+    return this.rest.sort(c).insert(this.first, c);
+  }
+
+  // determine if this ConsLoString is the same as the given ILoString
+  public boolean sameList(ILoString given) {
+    /* METHODS OF PARAMETERS: Methods of ILoString */
+    return given.sameCons(this);
+  }
+
+  // determine if this ConsLoString is the same MtLoString as the given MtLoString
+  public boolean sameMt(MtLoString given) {
+    /* METHODS OF PARAMETERS: Methods of MtLoString */
+    return false;
+  }
+
+  // determine if this ConsLoString is the same ConsLoString as the given ConsLoString
+  public boolean sameCons(ConsLoString given) {
+    /* METHODS OF PARAMETERS: Same as ConsLoString */
+    return this.first.equals(given.first) && this.rest.sameList(given);
+  }
+}
+
+class ExamplesStringTests {
+
+  ILoString los1 = new MtLoString();
+  ILoString los2 = new ConsLoString("universally", los1);
+  ILoString los3 = new ConsLoString("distortion", los2);
+  ILoString los4 = new ConsLoString("fuzz", los3);
+  ILoString los5 = new ConsLoString("dream", los1);
+  ILoString los6 = new ConsLoString("excessive", los5);
+  ILoString los7 = new ConsLoString("web", los6);
+
+  IStringsCompare lexcomp = new StringZetabetComp();
+  IStringsCompare lencomp = new StringLengthComp();
+
+  boolean testIsSorted(Tester t) {
+    return t.checkExpect(los1.isSorted(lencomp), true)
+        && t.checkExpect(los2.isSorted(lencomp), true)
+        && t.checkExpect(los3.isSorted(lexcomp), false)
+        && t.checkExpect(los4.isSorted(lexcomp), true);
+
+  }
+
+  boolean testIsSortedHelp(Tester t) {
+    return t.checkExpect(los1.isSortedHelp("", lencomp), true)
+        && t.checkExpect(los2.isSortedHelp("", lencomp), true)
+        && t.checkExpect(los3.isSortedHelp("", lexcomp), false)
+        && t.checkExpect(los4.isSortedHelp("", lexcomp), false);
+  }
+
+  boolean testMerge(Tester t) {
+    return t.checkExpect(los1.sameList(los1), true) 
+        && t.checkExpect(los2.sameList(los2), false)
+        && t.checkExpect(los3.sameList(los3), false) 
+        && t.checkExpect(los4.sameList(los4), false);
+  }
+
+  boolean testMergeHelper(Tester t) {
+    return t.checkExpect(los1.mergeHelper("", lencomp), los1)
+        && t.checkExpect(los2.mergeHelper("", lencomp), new ConsLoString("", los2))
+        && t.checkExpect(los3.mergeHelper("a", lexcomp), los3)
+        && t.checkExpect(los4.mergeHelper("bc", lexcomp), los4);
+  }
+
+  boolean testInsert(Tester t) {
+    return t.checkExpect(los1.insert("a", lencomp), new ConsLoString("a", los1))
+        && t.checkExpect(los2.insert("bc", lencomp), new ConsLoString("bc", los2))
+        && t.checkExpect(los3.insert("def", lexcomp),
+            new ConsLoString("distortion",
+                new ConsLoString("universally", new ConsLoString("def", los1))))
+        && t.checkExpect(los4.insert("ghij", lexcomp), new ConsLoString("ghij", los4));
+  }
+
+  boolean testSort(Tester t) {
+    return t.checkExpect(los1.sort(lexcomp), los1)
+        && t.checkExpect(los2.sort(lexcomp), new ConsLoString("universally", los1))
+        && t.checkExpect(los3.sort(lencomp),
+            new ConsLoString("distortion", new ConsLoString("universally", los1)))
+        && t.checkExpect(los4.sort(lencomp), new ConsLoString("fuzz",
+            new ConsLoString("distortion", new ConsLoString("universally", los1))));
+  }
+
+  boolean testSameMt(Tester t) {
+    return t.checkExpect(los1.sameMt((MtLoString) los1), true);
+
+  }
+
+  boolean testSameCons(Tester t) {
+    return t.checkExpect(los2.sameCons((ConsLoString) los4), false)
+        && t.checkExpect(los2.sameCons((ConsLoString) los2), false)
+        && t.checkExpect(los4.sameCons((ConsLoString) los4), false);
+
+  }
+
+}

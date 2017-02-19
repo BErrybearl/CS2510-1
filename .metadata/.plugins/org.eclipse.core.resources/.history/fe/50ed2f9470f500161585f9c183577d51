@@ -1,0 +1,178 @@
+import tester.*;
+
+interface IComparator<T> {
+  // Returns a negative number if t1 comes before t2 in this ordering
+  // Returns zero              if t1 is the same as t2 in this ordering
+  // Returns a positive number if t1 comes after t2 in this ordering
+  int compare(T t1, T t2);
+}
+
+class StringLengthCompGen implements IComparator<String> {
+  
+  public int compare(String t1, String t2) {
+    return t2.length() - t1.length() ;
+  }
+}
+
+class StringZetabetCompGen implements IComparator<String> {
+  
+  public int  compare(String t1, String t2) {
+    return  t1.compareTo(t2);
+  }
+}
+
+interface IList<T> {
+
+  boolean isSorted(IComparator<T> c);
+
+  boolean isSortedHelp(T s, IComparator<T> c);
+
+  IList<T> merge(IList<T> given, IComparator<T> c);
+
+  IList<T> mergeHelper(T given, IComparator<T> c);
+
+  IList<T> insert(T given, IComparator<T> c);
+
+  IList<T> sort(IComparator<T> c);
+
+  boolean sameList(IList<T> given);
+
+  boolean sameMt(MtList<T> given);
+
+  boolean sameCons(ConsList<T> given);
+
+  boolean isMt();
+}
+
+class MtList<T> implements IList<T> {
+
+  public boolean isSorted(IComparator<T> c) {
+    return true;
+  }
+
+  public boolean isSortedHelp(T s, IComparator<T> c) {
+    return true;
+  }
+
+  public boolean isMt() {
+    return true;
+  }
+
+  public IList<T> merge(IList<T> given, IComparator<T> c) {
+    return given;
+  }
+
+
+  public IList<T> mergeHelper(T given, IComparator<T> c) {
+    return this;
+  }
+
+  @Override
+  public IList<T> insert(T given, IComparator<T> c) {
+    return new ConsList<T>(given, this);
+  }
+
+
+  public IList<T> sort(IComparator<T> c) {
+    return this;
+  }
+
+
+  public boolean sameList(IList<T> given) {
+    return given.sameMt(this);
+  }
+
+
+  public boolean sameMt(MtList<T> given) {
+    return true;
+  }
+
+  public boolean sameCons(ConsList<T> given) {
+    return false;
+  }
+}
+
+class ConsList<T> implements IList<T> {
+
+  T first;  
+  IList<T> rest;
+
+  ConsList(T first, IList<T> rest) {
+    this.first = first;
+    this.rest = rest;
+  }
+
+  @Override
+  public boolean isSorted(IComparator<T> c) {
+    return this.rest.isSortedHelp(first, c);
+  }
+
+  public boolean isSortedHelp(T s, IComparator<T> c) {
+    if (c.compare(s, first) <= 0) { 
+      return this.rest.isSorted(c);
+    }
+    else  {
+      return false;
+    }   
+  }
+
+  public boolean isMt() {
+    return false;
+  }
+  public IList<T> merge(IList<T> given, IComparator<T> c) {
+    if (given.isMt()) {
+      return this;
+    }
+    else {
+      return this.mergeCons((ConsList<T>) given, c);
+    }
+  }
+
+  IList<T> mergeCons(ConsList<T> given, IComparator<T> c) {
+    return this.mergeHelper(given.first, c).merge(rest, c);
+  }
+
+  public IList<T> mergeHelper(T given, IComparator<T> c) {
+    if (c.compare(given, first) <= 0){
+      return new ConsList<T>(given, this);
+    }
+    else {
+      return new ConsList<T>(this.first, this.rest.mergeHelper(given, c));
+    }
+  }
+
+  public IList<T> insert(T given, IComparator<T> c) {
+    if (c.compare(given, first) <= 0) {
+      return new ConsList<T>(given, this);
+    }
+    else {
+      return new ConsList<T>(this.first, this.rest.insert(given, c));
+    }
+  }
+
+  public IList<T> sort(IComparator<T> c) {
+    return this.rest.sort(c).insert(this.first, c);
+  }
+
+  @Override
+  public boolean sameList(IList<T> given) {
+    return given.sameCons(this);
+  }
+
+  @Override
+  public boolean sameMt(MtList<T> given) {
+    return false;
+  }
+
+
+  public boolean sameCons(ConsList<T> given) {
+    return this.first.equals(given.first) && this.rest.sameList(given);
+  }
+}
+
+
+class ExamplesStringsGenTests {
+  
+}
+
+

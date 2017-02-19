@@ -80,16 +80,6 @@ class Tag {
   }
 }
 
-/*
- * class XMLFrag {
- * 
- * String plaintext; Tagged tagged;
- * 
- * XMLFrag(String plaintext, Tagged tagged) { this.plaintext = plaintext;
- * this.tagged = tagged; }
- * 
- * }
- */
 
 interface IXMLFrag {
 
