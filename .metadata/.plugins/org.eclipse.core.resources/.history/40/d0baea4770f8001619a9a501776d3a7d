@@ -1,0 +1,402 @@
+/*
+ * @(#)SokoCanvas.java  1.4 01/04/04
+ * Copyright (c) 1999-2001 Sun Microsystems, Inc. All Rights Reserved.
+ *
+ */
+
+package examples.sokoban;
+
+import java.io.*;
+import javax.microedition.lcdui.*;
+import javax.microedition.midlet.*;
+
+/**
+ * SokoCanvas displays the game board and handles key events.
+ * The Sokoban game logic and algorithms are separated into class
+ * Board.
+ * SokoCanvas does not setup or use any Commands. Commands for each
+ * screen and listeners should be setup outside this class.
+ * SokoCanvas generates a SELECT_COMMAND when the current level is
+ * solved. Sequencing through screens is done in the Sokoban MIDlet.
+ * <p>
+ * SokoCanvas handles the reading, initialization, and sequencing
+ * of individual puzzle screens.
+ * <p>
+ * SokoCanvas uses the Score class to restore and save game levels
+ * and scores for each level. To display the scores use
+ * getScoreScreen. It will be initialized with the current scores.
+ * To select a new level use the getLevelScreen and gotoLevel
+ * methods.
+ * <p>
+ * SokoCanvas handled key events for LEFT, RIGHT, UP, and DOWN to
+ * move the pusher in the game board.
+ * <p>
+ * SokoCanvas selects color and grayscale values for the different
+ * parts of the board.
+ */
+class SokoCanvas extends Canvas {
+  private int level = 1;
+  private boolean solved;
+  private int cell = 1;   // number of pixels per cell 
+  private int width, height;  // dimensions of this canvas
+
+  private Board board;    // Board makes the moves
+  private Sokoban sokoban;    // Sokoban MIDlet
+  private Display display;    // Display showing this Canvas
+  private CommandListener listener; // Listener for solved notice
+
+  private Score score;    // Score object
+  private Form scoreForm;   // Form to show scores
+  private Font font;    // Font for text
+  private int fh;     // Font height for text lines
+
+  // 2 Bit color/grayscale defaults
+  private int wallColor =   0x7f7f7f;
+  private int groundColor = 0xffffff;
+  private int packetColor = 0x000000;
+  private int storeColor =  0x000000;
+  private int pusherColor = 0x000000;
+
+  /**
+   * Construct a new canvas
+   */
+  public SokoCanvas(Sokoban sokoban, Score s) {
+    height = getHeight();
+    width = getWidth();
+    font = Font.getDefaultFont();
+    fh = font.getHeight();
+    
+    this.sokoban = sokoban;
+    display = Display.getDisplay(sokoban);
+    score = s;
+    board = new Board();
+    initColors();
+  }
+
+  /**
+   * Read the previous level number from the score file.
+   * Read in the level data.
+   */
+  public void init() {
+    /*
+     * Read the last level
+     * if it can't be found, revert to level 0
+     */
+    level = score.level;
+    if (!readScreen(level)) {
+      level = 0;
+      readScreen(level);
+    }
+    repaint();
+  }
+  
+  /*
+   * Read the colors to use from the descriptor.
+   */
+  private void initColors() {
+    boolean isColor = display.isColor();
+    int numColors = display.numColors();
+
+    if (isColor) {
+      if (numColors > 2) {
+        setColors(0x006D55, 0xffffff,
+            0xff6d00, 0xb60055, 0x6d6dff);
+      }
+    } else {
+      if (numColors > 2) {
+        setColors(0x999999, 0xffffff,
+            0x666666, 0xbbbbbb, 0x000000);
+      } else {
+        setColors(0x6a6a6a, 0xffffff,
+            0x6a6a6a, 0xbbbbbb, 0x000000);
+      }
+    }
+  }
+
+  /*
+   * Set the colors.
+   */
+  private void setColors(int w, int g, int pa, int s, int pu) {
+    wallColor = w;
+    groundColor = g;
+    packetColor = pa;
+    storeColor = s;
+    pusherColor = pu;
+  }
+
+  /**
+   * Undo the last move if possible.
+   * Here so undo can be triggered by a command.
+   */
+  public void undoMove() {
+    board.undoMove();
+    solved = board.solved();
+    repaint();
+  }
+
+  /**
+   * Restart the current level.
+   */
+  public void restartLevel() {
+    readScreen(level);
+    repaint();
+    solved = false;
+  }
+
+  /**
+   * Start the next level.
+   */
+  public void nextLevel(int offset) {
+    updateScores();   // save best scores 
+    if (readScreen(level+offset)) {
+      level += offset;
+      score.setLevel(level);
+      solved = false;
+      repaint();
+    }
+  }
+
+  /**
+   * Read and setup the next level.
+   * Opens the resource file with the name "/Screen.<lev>"
+   * and tells the board to read from the stream.
+   * <STRONG>Must be called only with the board locked.</STRONG>
+   *
+   * @param lev the level number to read.
+   * @return true if the reading of the level worked,
+   *    false otherwise.
+   */
+  private boolean readScreen(int lev) {
+    if (lev <= 0) {
+      // Initialize the default zero screen
+      board.screen0();
+    } else {
+      InputStream is = null;
+      try {
+        String base = "/examples/sokoban/data/screen.";
+        is = getClass().getResourceAsStream(base + lev);
+        if (is != null) {
+          board.read(is, lev);
+          is.close();
+        } else {
+          Alert alert = new Alert(
+            "Could not find level " +
+            level);
+          display.setCurrent(alert);
+          return false;
+        }
+      } catch (java.io.IOException ex) {
+        try {
+          is.close();
+        } catch (IOException x) {
+        }
+        return false;
+      }
+    }
+    cell = ((height-fh) / board.height < width / board.width) ?
+      (height-fh) / board.height : width / board.width;
+    return true;
+  }
+
+  /**
+   * Return the Screen to display scores.
+   * It returns a screen with the current scores.
+   * @return a screen initialized with the current score
+   * information.
+   */
+  public Screen getScoreScreen() {
+    Form scoreForm = null;
+    boolean newbest = solved &&
+        (score.npushes == 0 ||
+         board.npushes < score.npushes);
+    scoreForm = new Form(null);
+
+    scoreForm.append(newbest ?
+         "New Best:\n" : "Current:\n");
+    scoreForm.append("  ");
+    scoreForm.append(Integer.toString(board.npushes));
+    scoreForm.append(" pushes\n");
+
+    scoreForm.append("  ");
+    scoreForm.append(Integer.toString(board.nmoves));
+    scoreForm.append(" moves\n");
+
+    scoreForm.append(newbest ? "Old Best:\n" : "Best\n");
+    scoreForm.append("  ");
+    scoreForm.append(Integer.toString(score.npushes));
+    scoreForm.append(" pushes\n");
+
+    scoreForm.append("  ");
+    scoreForm.append(Integer.toString(score.nmoves));
+    scoreForm.append(" moves\n ");
+
+    String title = "Scores";
+    if (newbest) {
+        title = "Congratulations";
+    }
+    scoreForm.setTitle(title);
+    return scoreForm;
+  }
+
+  /*
+   * Handle a repeated arrow keys as though it were another press.
+   * @param keyCode the key pressed.
+   */
+  protected void keyRepeated(int keyCode) {
+    int action = getGameAction(keyCode);
+    switch (action) {
+    case Canvas.LEFT:
+    case Canvas.RIGHT:
+    case Canvas.UP:
+    case Canvas.DOWN:
+      keyPressed(keyCode);
+    break;
+    default:
+      break;
+    }
+  }
+
+  /**
+   * Handle a single key event.
+   * The LEFT, RIGHT, UP, and DOWN keys are used to
+   * move the pusher within the Board.
+   * Other keys are ignored and have no effect.
+   * Repaint the screen on every action key.
+   */
+  protected void keyPressed(int keyCode) {
+    // Protect the data from changing during painting.
+    synchronized (board) {
+
+      int action = getGameAction(keyCode);
+      int move = 0;
+      switch (action) { 
+      case Canvas.LEFT:
+        move = Board.LEFT;
+        break;
+      case Canvas.RIGHT:
+        move = Board.RIGHT;
+        break;
+      case Canvas.DOWN:
+        move = Board.DOWN;
+        break;
+      case Canvas.UP:
+        move = Board.UP;
+        break;
+
+        // Ignore keycodes that don't map to actions.
+      default:
+        return;
+      }
+
+      // Tell the board to move the piece and queue a repaint
+      board.move(move);
+      repaint();
+    
+      if (!solved && board.solved()) {
+        solved = true;
+        if (listener != null) {
+          listener.commandAction(
+            List.SELECT_COMMAND, this);
+        }
+      }
+    } // End of synchronization on the Board.
+  }
+  
+  /**
+   * Update the scores for the current level if it has
+   * been solved and the scores are better than before.
+   */
+  private void updateScores() {
+    if (!solved)
+      return;
+    /*
+     * Update the scores. If the score for this level is lower
+     * than the last recorded score save the lower scores.
+     */
+    if (score.npushes == 0 || board.npushes < score.npushes) {
+      score.setLevelScore(board.npushes, board.nmoves);
+    }
+  }
+
+  /**
+   * Add a listener to notify when the level is solved.
+   * The listener is send a List.SELECT_COMMAND when the
+   * level is solved.
+   * @param l the object implementing interface CommandListener
+   */
+  public void setCommandListener(CommandListener l) {
+    super.setCommandListener(l);
+    listener = l;
+  }
+
+  /*
+   * Paint the contents of the Canvas.
+   * The clip rectangle of the canvas is retrieved and used
+   * to determine which cells of the board should be repainted.
+   * @param g Graphics context to paint to.
+   */
+  protected void paint(Graphics g) {
+
+    // Lock the board to keep it from changing during paint
+    synchronized (board) {
+      
+      int x = 0, y = 0, x2 = board.width, y2 = board.height;
+
+      // Figure what part needs to be repainted.
+      int clipx = g.getClipX();
+      int clipy = g.getClipY();
+      int clipw = g.getClipWidth();
+      int cliph = g.getClipHeight();
+      x = clipx / cell;
+      y = clipy / cell;
+      x2 = (x + (clipx + clipw + cell-1)) / cell;
+      y2 = (y + (clipy + cliph + cell-1)) / cell;
+      if (x2 > board.width)
+        x2 = board.width;
+      if (y2 > board.height)
+        y2 = board.height;
+
+      // Fill entire area with ground color
+      g.setColor(groundColor);
+      g.fillRect(clipx, clipy, clipw, cliph);
+
+      for (y = 0; y < y2; y++) {
+        for (x = 0; x < x2; x++) {
+          byte v = board.get(x, y);
+          switch (v & ~Board.PUSHER) {
+          case Board.WALL:
+            g.setColor(wallColor);
+            g.fillRect(x*cell, y*cell,
+                 cell, cell);
+            break;
+
+          case Board.PACKET:
+          case Board.PACKET | Board.STORE:
+            g.setColor(packetColor);
+            g.fillRect(x*cell+1, y*cell+1,
+                 cell-2, cell-2);
+            break;
+          case Board.STORE:
+            g.setColor(storeColor);
+            g.drawRect(x*cell+1, y*cell+1,
+                 cell-2, cell-2);
+            break;
+
+          case Board.GROUND:
+          default:
+            // Noop since already filled.
+            break;
+          }
+          if ((v & Board.PUSHER) != 0) {
+            g.setColor(pusherColor);
+            g.fillArc(x*cell, y*cell,
+                cell, cell, 0, 360);
+          }
+        }
+      }
+      g.setColor(pusherColor);
+      g.drawString("Sokoban Level " + level, 0, height-fh,
+             Graphics.TOP|Graphics.LEFT);
+    }
+  }
+}

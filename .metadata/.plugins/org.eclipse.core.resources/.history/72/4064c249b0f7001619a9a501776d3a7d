@@ -1,0 +1,98 @@
+import java.awt.Color;
+
+import javalib.funworld.World;
+import javalib.funworld.WorldScene;
+import javalib.worldimages.WorldEnd;
+
+abstract class Posn {
+  
+}
+
+class Player extends Posn {
+  
+  // move player
+  public Player movePlayer(String ke) {
+    return null;
+  }
+  
+}
+
+class Box extends Posn {
+  
+  Color color;
+  
+  // move the box and change the color when is's on the target position
+  public Box moveBox() {
+    return null;
+  }
+  
+  // determine whether this box is movable to the dir with given key event
+  // check the dir of given key of the box is a box or wall
+  public boolean movable(String ke) {
+    return false;
+  }
+}
+
+class Target extends Posn {
+  
+  // determine whether this target is solved ( a box on the same posn as this target)
+  public boolean isSolved() {
+    return false;
+    
+  }
+}
+
+// list of box
+interface ILoBox {
+  
+  // determine whether the boxes in the list are all in (target)position
+  boolean isSolved();
+  
+}
+
+
+// list of target
+interface ILoTarget {
+  
+}
+
+
+class buildGame extends World {
+
+  
+  
+  
+  Player player;
+  ILoBox box;
+  ILoTarget target;
+  
+  public WorldScene makeScene() {
+    return null;
+  }
+  
+  // when the player or player&box hits the wall, keep their posn
+  public World onKeyEvent(String ke) {
+    return null;
+  }
+  
+  // the game does not have onTick action, so just return the world
+  public World onTick() {
+    return null;    
+  }
+  
+  // last scene
+  public WorldScene lastScene(){
+    return null;   
+  }
+  
+  // world end when all target is solved or all box can't be moved
+  public WorldEnd worldEnds() {
+    return lastWorld;
+  }
+  
+  // draw all elements(player, boxes, targets) and canvas
+  public WorldScene renderItem(WorldScene accu) {
+    return accu; 
+  }
+
+}

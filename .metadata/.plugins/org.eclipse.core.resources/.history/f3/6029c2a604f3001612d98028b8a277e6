@@ -1,9 +1,0 @@
-User Guide
-==========================================================================================
-
-Fishy is a game of survival.  The player fish has the ability to 
-eat fish that are smaller or of equal size to itself.  In addition, it can be eaten by any larger fish.
-
-The player's objective is to become the largest fish in the game by eating others. The other fish swim in straight lines across the screen.  When they hit the edge, they are regenerated at a different y position going the other way.  On the other hand, the player fish has the ability to loop around the sides of the scene indefinitely.  It cannot loop from the top to bottom, or vise-versa.  The player fish can move up, down, left, and right using the arrow keys.
-
-When the player eats another fish, it grows based on the size of the fish it ate.  Once it is larger than every other fish in the scene, the player wins the game.  If, at any time, the player fish is eaten, the game is lost.
