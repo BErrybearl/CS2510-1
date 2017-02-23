@@ -31,7 +31,8 @@ interface IList<T> {
   IList<T> filter(IPred<T> pred);
 
   <U> U accept(IListVisitor<T, U> v);
-
+  
+//  <U> U apply(IListVisitor<T, U> v);  
 }
 
 class MtList<T> implements IList<T> {
@@ -51,7 +52,10 @@ class MtList<T> implements IList<T> {
   public <U> U accept(IListVisitor<T, U> v) {
     return v.visit(this);
   }
-
+  
+  public <U> U apply(IListVisitor<T, U> v) {
+    return this.accept(v);
+  }
 }
 
 class ConsList<T> implements IList<T> {
@@ -76,13 +80,16 @@ class ConsList<T> implements IList<T> {
     if (pred.apply(this.first)) {
       return new ConsList<T>(this.first, this.rest.filter(pred));
     }
-    else {
+    else
       return this.rest.filter(pred);
-    }
   }
 
   public <U> U accept(IListVisitor<T, U> v) {
     return v.visit(this);
+  }
+  
+  public <U> U apply(IListVisitor<T, U> v) {
+    return this.accept(v);
   }
 
 }
@@ -91,7 +98,6 @@ interface IPred<T> {
 
   // takes a T and produces a boolean
   boolean apply(T arg);
-
 }
 
 // represents a function object that determines if the given String is the
@@ -100,9 +106,8 @@ class IsLetterI implements IPred<String> {
 
   // determines if the given String is the letter "I" (case insensitive)
   public boolean apply(String arg) {
-    return arg.equalsIgnoreCase("I");
+    return arg.toLowerCase().equals("i");
   }
-
 }
 
 // represents a function object that determines if the Book's author field is an
@@ -117,14 +122,12 @@ class IsEmptyAuthor implements IPred<Book> {
 
 interface IFunc<T, U> {
   U apply(T t);
-
 }
 
 class BookTitle implements IFunc<Book, String> {
   public String apply(Book book) {
     return book.title;
   }
-
 }
 
 class CircleArea implements IFunc<Circle, Double> {
@@ -135,11 +138,9 @@ class CircleArea implements IFunc<Circle, Double> {
 }
 
 interface IListVisitor<T, U> {
-
   U visit(MtList<T> mt);
 
   U visit(ConsList<T> cons);
-
 }
 
 class MapVisitor<T, U> implements IListVisitor<T, IList<U>> {
@@ -155,10 +156,6 @@ class MapVisitor<T, U> implements IListVisitor<T, IList<U>> {
 
   public IList<U> visit(ConsList<T> cons) {
     return new ConsList<U>(f.apply(cons.first), cons.rest.accept(this));
-  }
-
-  public IList<U> apply(IList<T> t) {
-    return t.accept(this);
   }
 
 }
@@ -181,10 +178,6 @@ class FilterVisitor<T> implements IListVisitor<T, IList<T>> {
     else {
       return cons.rest.accept(this);
     }
-  }
-
-  public IList<T> apply(IList<T> t) {
-    return t.accept(this);
   }
 }
 

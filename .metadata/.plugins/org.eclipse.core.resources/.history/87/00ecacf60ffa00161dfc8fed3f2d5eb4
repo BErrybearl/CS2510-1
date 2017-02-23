@@ -31,7 +31,7 @@ interface IList<T> {
   IList<T> filter(IPred<T> pred);
 
   <U> U accept(IListVisitor<T, U> v);
-
+  
 }
 
 class MtList<T> implements IList<T> {
@@ -76,9 +76,8 @@ class ConsList<T> implements IList<T> {
     if (pred.apply(this.first)) {
       return new ConsList<T>(this.first, this.rest.filter(pred));
     }
-    else {
-      return this.rest.filter(pred);
-    }
+    else{
+      return this.rest.filter(pred);}
   }
 
   public <U> U accept(IListVisitor<T, U> v) {
@@ -91,7 +90,7 @@ interface IPred<T> {
 
   // takes a T and produces a boolean
   boolean apply(T arg);
-
+  
 }
 
 // represents a function object that determines if the given String is the
@@ -103,6 +102,7 @@ class IsLetterI implements IPred<String> {
     return arg.equalsIgnoreCase("I");
   }
 
+  
 }
 
 // represents a function object that determines if the Book's author field is an
@@ -117,7 +117,7 @@ class IsEmptyAuthor implements IPred<Book> {
 
 interface IFunc<T, U> {
   U apply(T t);
-
+  
 }
 
 class BookTitle implements IFunc<Book, String> {
@@ -134,12 +134,12 @@ class CircleArea implements IFunc<Circle, Double> {
   }
 }
 
-interface IListVisitor<T, U> {
-
+interface IListVisitor<T, U> {//extends IFunc<IList<T>, IList<U>> {
+  
   U visit(MtList<T> mt);
 
   U visit(ConsList<T> cons);
-
+  
 }
 
 class MapVisitor<T, U> implements IListVisitor<T, IList<U>> {
