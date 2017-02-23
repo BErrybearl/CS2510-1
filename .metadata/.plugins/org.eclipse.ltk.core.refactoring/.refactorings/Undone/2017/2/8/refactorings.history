@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;IList.map(...)&apos; to &apos;apply&apos;&#x0A;- Original project: &apos;Undone&apos;&#x0A;- Original element: &apos;IList.map(...)&apos;&#x0A;- Renamed element: &apos;IList.apply(...)&apos;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;map&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;{Lists.java[IList~map~QIFunc\&lt;QT;QU;&gt;;" name="apply" references="true" stamp="1487827343237" version="1.0"/>
+</session>

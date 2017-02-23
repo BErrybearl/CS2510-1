@@ -1,0 +1,155 @@
+import tester.Tester;
+
+class Book {
+  String title;
+  String author;
+  double price;
+
+  Book(String title, String author, double price) {
+    this.title = title;
+    this.author = author;
+    this.price = price;
+  }
+
+}
+
+class Circle {
+  int radius;
+
+  Circle(int r) {
+    this.radius = r;
+  }
+
+}
+
+interface IPred<T> {
+  IPred<T> append(IPred<T> l);
+
+  IPred<T> appendHelper(IPred<T> l2);
+
+  <U> IPred<U> map(IFunc<T, U> f);
+
+  IPred<T> filter(IFunc<T, Boolean> f);
+
+  <U> U accept(IListVisitor<T, U> v);
+}
+
+class MtList<T> implements IPred<T> {
+
+  public IPred<T> append(IPred<T> l) {
+    return l;
+  }
+
+  public IPred<T> appendHelper(IPred<T> l2) {
+    return l2;
+  }
+
+  public <U> IPred<U> map(IFunc<T, U> f) {
+    return new MtList<U>();
+  }
+
+  public IPred<T> filter(IFunc<T, Boolean> f) {
+    return this;
+  }
+
+  public <U> U accept(IListVisitor<T, U> v) {
+    return v.visit(this);
+  }
+}
+
+class ConsList<T> implements IPred<T> {
+  T first;
+  IPred<T> rest;
+
+  ConsList(T first, IPred<T> rest) {
+    this.first = first;
+    this.rest = rest;
+  }
+
+  public IPred<T> append(IPred<T> l) {
+    return l.appendHelper(this);
+  }
+
+  public IPred<T> appendHelper(IPred<T> l2) {
+    return new ConsList<T>(this.first, this.rest.appendHelper(l2));
+  }
+
+  public <U> IPred<U> map(IFunc<T, U> f) {
+    return new ConsList<U>(f.apply(this.first), this.rest.map(f));
+  }
+
+  public IPred<T> filter(IFunc<T, Boolean> f) {
+    if (f.apply(this.first)) {
+      return new ConsList<T>(this.first, this.rest.filter(f));
+    }
+    else {
+      return this.rest.filter(f);
+    }
+  }
+
+  public <U> U accept(IListVisitor<T, U> v) {
+    return v.visit(this);
+  }
+}
+
+interface IFunc<T, U> {
+  U apply(T a);
+}
+
+class BookTitle implements IFunc<Book, String> {
+
+  public String apply(Book book) {
+    return book.title;
+  }
+}
+
+class CircleArea implements IFunc<Circle, Double> {
+
+  public Double apply(Circle cir) {
+    return Math.PI * cir.radius * cir.radius;
+  }
+}
+
+interface IListVisitor<T, U> {
+  U visit(MtList<T> mt);
+
+  U visit(ConsList<T> cons);
+}
+
+class MapVisitor<T, U> implements IListVisitor<T, IPred<U>> {
+  IFunc<T, U> f;
+
+  MapVisitor(IFunc<T, U> f) {
+    this.f = f;
+  }
+
+  public IPred<U> visit(MtList<T> mt) {
+    return new MtList<U>();
+  }
+
+  public IPred<U> visit(ConsList<T> cons) {
+    return new ConsList<U>(f.apply(cons.first), cons.rest.accept(this));
+  }
+
+}
+
+class FilterVisitor<T> implements IListVisitor<T, IPred<T>> {
+  IFunc<T, Boolean> f;
+
+  FilterVisitor(IFunc<T, Boolean> f) {
+    this.f = f;
+  }
+
+  public IPred<T> visit(MtList<T> mt) {
+    return new MtList<T>();
+  }
+
+  public IPred<T> visit(ConsList<T> cons) {
+    if (f.apply(cons.first)) {
+      return new ConsList<T>(cons.first, cons.rest.accept(this));
+    }
+    else {
+      return cons.rest.accept(this);
+    }
+  }
+}
