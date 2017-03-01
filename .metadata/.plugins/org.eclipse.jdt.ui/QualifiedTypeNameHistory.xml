@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="tester.Tester"/>
 <fullyQualifiedTypeName name="javalib.funworld.World"/>
 <fullyQualifiedTypeName name="javalib.worldimages.WorldEnd"/>
 <fullyQualifiedTypeName name="java.awt.Color"/>
 <fullyQualifiedTypeName name="shortString"/>
+<fullyQualifiedTypeName name="tester.Tester"/>
 </qualifiedTypeNameHistroy>
