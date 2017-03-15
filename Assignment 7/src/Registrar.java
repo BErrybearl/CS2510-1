@@ -20,8 +20,26 @@ class Course {
     prof.addCourse(this);
   }
 
+  /* FIELDS:
+   * this.name    -- String
+   * this.prof    -- Instructor
+   * this.students  -- IList<Student>
+   * 
+   * METHODS:
+   * this.enrollHelper(Student s)   -- void
+   * 
+   * METHODS OF FIELDS:
+   * this.prof.addCourse(Course course)    -- void
+   * this.prof.dejavu(Student s)           -- boolean
+   * this.students.ormap(IPredicate<T> pred)   -- boolean
+   * this.students.include(IComparator<T> comp, T t)   -- boolean
+   * this.students.count(IPredicate<T> pred)      -- int
+   * 
+   */
+
   // help enroll the given Student in this Course
   void enrollHelper(Student s) {
+    /* METHODS OF PARAMETER: Methods for Student */
     this.students = new ConsList<Student>(s, this.students);
   }
 }
@@ -37,14 +55,30 @@ class Instructor {
     this.courses = new MtList<Course>();
   }
 
+  /* FIELDS:
+   * this.name    -- String
+   * this.courses   -- IList<Course>
+   * 
+   * METHODS:
+   * this.addCourse(Course course)    -- void
+   * this.dejavu(Student s)           -- boolean
+   * 
+   * METHODS OF FIELDS:
+   * this.courses.ormap(IPredicate<T> pred)   -- boolean
+   * this.courses.include(IComparator<T> comp, T t)   -- boolean
+   * this.courses.count(IPredicate<T> pred)      -- int
+   */
+
   // add the given Course to this Instructor's courses list
-  public void addCourse(Course course) {
+  void addCourse(Course course) {
+    /* METHODS OF PARAMETER: Methods for Course */
     this.courses = new ConsList<Course>(course, this.courses);
   }
 
   // determine if the given Student is in one of more of this Instructor's
   // classes
   boolean dejavu(Student s) {
+    /* METHODS OF PARAMETER: Methods for Student */
     return this.courses.count(new HaveStudent(s)) > 1;
   }
 }
@@ -62,15 +96,32 @@ class Student {
     this.courses = new MtList<Course>();
   }
 
+  /* FIELDS:
+   * this.name      -- Stirng
+   * this.id        -- int
+   * this.courses   -- IList<Course>
+   * 
+   * METHODS:
+   * this.enroll(Course c)    -- void
+   * this.classmates(Student s)   -- boolean
+   * 
+   * METHODS OF FIELDS:
+   * this.courses.ormap(IPredicate<T> pred)   -- boolean
+   * this.courses.include(IComparator<T> comp, T t)   -- boolean
+   * this.courses.count(IPredicate<T> pred)      -- int
+   */
+
   // enroll this Student in the given Course
   void enroll(Course c) {
-    this.courses = new ConsList<Course>(c, this.courses);
+    /* METHODS OF PARAMETER: Methods for Course */
     c.enrollHelper(this);
+    this.courses = new ConsList<Course>(c, this.courses);
   }
 
   // determine if this Student is in any of the same classes as the given
   // Student
   boolean classmates(Student s) {
+    /* METHODS OF PARAMETER: Methods for Student */
     return this.courses.ormap(new HaveStudent(s));
   }
 }
@@ -93,20 +144,29 @@ interface IList<T> {
 // represent an empty list of T
 class MtList<T> implements IList<T> {
 
+  /* METHODS:
+   * this.ormap(IPredicate<T> pred)   -- boolean
+   * this.include(IComparator<T> comp, T t)   -- boolean
+   * this.count(IPredicate<T> pred)      -- int
+   */
+
   // implements boolean operator "or" with a function object
   public boolean ormap(IPredicate<T> pred) {
+    /* METHODS OF PARAMETER: Methods for IPredicate<T> */
     return false;
   }
 
   // determine if this IList<T> contains a T that satisfies
   // the given IComparator<T>.
   public boolean include(IComparator<T> comp, T t) {
+    /* METHODS OF PARAMETER: Methods for IComparator<T> */
     return false;
   }
 
   // counts the number of Ts in this Mt<T>List that satisfy the given
   // IPredicate<T>
   public int count(IPredicate<T> pred) {
+    /* METHODS OF PARAMETER: Methods for IPredicate<T> */
     return 0;
   }
 
@@ -123,20 +183,38 @@ class ConsList<T> implements IList<T> {
     this.rest = rest;
   }
 
+  /* FIELDS:
+   * this.first       -- T
+   * this.rest        -- IList<T>
+   * 
+   * METHODS:
+   * this.ormap(IPredicate<T> pred)   -- boolean
+   * this.include(IComparator<T> comp, T t)   -- boolean
+   * this.count(IPredicate<T> pred)      -- int
+   * 
+   * METHODS OF FIELDS:
+   * this.rest.ormap(IPredicate<T> pred)   -- boolean
+   * this.rest.include(IComparator<T> comp, T t)   -- boolean
+   * this.rest.count(IPredicate<T> pred)      -- int
+   */
+
   // implements boolean operator "or" with a function object
   public boolean ormap(IPredicate<T> pred) {
+    /* METHODS OF PARAMETER: Methods for IPredicate<T> */
     return pred.apply(this.first) || this.rest.ormap(pred);
   }
 
   // determine if this IList<T> contains a T that satisfies
   // the given IComparator<T>.
   public boolean include(IComparator<T> comp, T t) {
+    /* METHODS OF PARAMETER: Methods for IComparator<T> */
     return comp.apply(this.first, t) || this.rest.include(comp, t);
   }
 
   // counts the number of Ts in this Mt<T>List that satisfy the given
   // IPredicate<T>
   public int count(IPredicate<T> pred) {
+    /* METHODS OF PARAMETER: Methods for IPredicate<T> */
     if (pred.apply(this.first)) {
       return 1 + this.rest.count(pred);
     }
@@ -160,8 +238,20 @@ class HaveStudent implements IPredicate<Course> {
     this.s = s;
   }
 
+  /* FIELDS:
+   * this.s     -- Student
+   * 
+   * METHODS:
+   * this.apply(Course c)     -- boolean
+   * 
+   * METHODS OF FIELDS:
+   * this.s.enroll(Course c)    -- void
+   * this.s.classmates(Student s)   -- boolean
+   */
+
   // determine if a specific student is in a course
   public boolean apply(Course c) {
+    /* METHODS OF PARAMETER: Methods for Course */
     return c.students.include(new SameStudent(), this.s);
   }
 }
@@ -174,8 +264,13 @@ interface IComparator<T> {
 // function object that determines if two students are the same
 class SameStudent implements IComparator<Student> {
 
+  /* METHODS:
+   * this.apply(Student s1, Student s2)     -- boolean
+   */
+
   // determine if the two given Students are the same
   public boolean apply(Student s1, Student s2) {
+    /* METHODS OF PARAMETER: Methods for Student */
     return s1.id == s2.id;
   }
 }

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;ILoBuddy.countComBuddies(...)&apos; to &apos;countCommonBuddies&apos;&#x0A;- Original project: &apos;Lab 3&apos;&#x0A;- Original element: &apos;ILoBuddy.countComBuddies(...)&apos;&#x0A;- Renamed element: &apos;ILoBuddy.countCommonBuddies(...)&apos;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;countComBuddies&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;{Buddy.java[ILoBuddy~countComBuddies~QPerson;" name="countCommonBuddies" references="true" stamp="1489450867730" version="1.0"/>
+</session>

@@ -1,0 +1,21 @@
+// represents an empty list of Person's buddies
+public class MTLoBuddy implements ILoBuddy {
+
+  public boolean hasDirectBuddy(Person that) {
+    return false;
+  }
+
+  public int countCommonBuddies(Person that) {
+    return 0;
+  }
+
+
+  public boolean indrectInv(Person that) {
+    return false;
+  }
+
+  public int countHelper(ILoBuddy that) {
+    return 0;
+  }
+
+}

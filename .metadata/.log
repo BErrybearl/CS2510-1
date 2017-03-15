@@ -1389,3 +1389,100 @@ Java Model Exception: Java Model Status [ConsList [in [Working copy] Registrar.j
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
 !SUBENTRY 1 org.eclipse.jdt.core 4 969 2017-02-26 18:52:22.121
 !MESSAGE ConsList [in [Working copy] Registrar.java [in <default> [in src [in Assignment 7]]]] does not exist
+!SESSION 2017-03-01 10:17:17.453 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_102
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_CN
+Framework arguments:  -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+
+!ENTRY org.eclipse.equinox.p2.engine 4 4 2017-03-01 10:18:21.878
+!MESSAGE An error occurred while collecting items to be installed
+!SUBENTRY 1 org.eclipse.equinox.p2.engine 4 0 2017-03-01 10:18:21.878
+!MESSAGE session context was:(profile=_Applications_Eclipse.app_Contents_Eclipse, phase=org.eclipse.equinox.internal.p2.engine.phases.Collect, operand=, action=).
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: osgi.bundle,javaewah,1.1.6.v20160919-1400
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.core,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.doc,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.mylyn.ui,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.ui,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.jgit,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.jgit.archive,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.egit,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.egit.mylyn,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:21.878
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.jgit,4.6.0.201612231935-r
+
+!ENTRY org.eclipse.equinox.p2.engine 4 4 2017-03-01 10:18:42.320
+!MESSAGE An error occurred while collecting items to be installed
+!SUBENTRY 1 org.eclipse.equinox.p2.engine 4 0 2017-03-01 10:18:42.320
+!MESSAGE session context was:(profile=_Applications_Eclipse.app_Contents_Eclipse, phase=org.eclipse.equinox.internal.p2.engine.phases.Collect, operand=, action=).
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: osgi.bundle,javaewah,1.1.6.v20160919-1400
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.core,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.doc,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.mylyn.ui,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.ui,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.jgit,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.jgit.archive,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.egit,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.egit.mylyn,4.6.0.201612231935-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-01 10:18:42.320
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.jgit,4.6.0.201612231935-r
+!SESSION 2017-03-13 07:51:51.086 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_102
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_CN
+Framework arguments:  -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.java.product -keyring /Users/echo/.eclipse_keyring
+
+!ENTRY org.eclipse.equinox.p2.engine 4 4 2017-03-13 17:38:37.708
+!MESSAGE An error occurred while collecting items to be installed
+!SUBENTRY 1 org.eclipse.equinox.p2.engine 4 0 2017-03-13 17:38:37.708
+!MESSAGE session context was:(profile=_Applications_Eclipse.app_Contents_Eclipse, phase=org.eclipse.equinox.internal.p2.engine.phases.Collect, operand=, action=).
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: osgi.bundle,javaewah,1.1.6.v20160919-1400
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit,4.6.1.201703071140-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.core,4.6.1.201703071140-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.doc,4.6.1.201703071140-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.mylyn.ui,4.6.1.201703071140-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.egit.ui,4.6.1.201703071140-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.jgit,4.6.1.201703071140-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: osgi.bundle,org.eclipse.jgit.archive,4.6.1.201703071140-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: osgi.bundle,com.jcraft.jsch,0.1.54.v20170116-1932
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.egit,4.6.1.201703071140-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.egit.mylyn,4.6.1.201703071140-r
+!SUBENTRY 1 org.eclipse.equinox.p2.artifact.repository 4 0 2017-03-13 17:38:37.708
+!MESSAGE No repository found containing: org.eclipse.update.feature,org.eclipse.jgit,4.6.1.201703071140-r
