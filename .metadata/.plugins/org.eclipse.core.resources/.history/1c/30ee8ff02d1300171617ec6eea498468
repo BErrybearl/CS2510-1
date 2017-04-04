@@ -1,0 +1,1071 @@
+import tester.*;
+import javalib.impworld.*;
+import java.awt.Color;
+import javalib.worldimages.*;
+import java.util.*;
+
+// represents a list of data
+interface IList<T> extends Iterable<T> {
+  // determines if the given list is empty
+  boolean isEmpty();
+}
+
+class MtList<T> implements IList<T> {
+  // returns an iterator for this
+  public Iterator<T> iterator() {
+    return new IListIterator<T>(this);
+  }
+
+  // returns if this list is empty
+  public boolean isEmpty() {
+    return true;
+  }
+}
+
+class ConsList<T> implements IList<T> {
+  T first;
+  IList<T> rest;
+
+  // to construct a non-empty list
+  ConsList(T first, IList<T> rest) {
+    this.first = first;
+    this.rest = rest;
+  }
+
+  // returns an iterator for this
+  public Iterator<T> iterator() {
+    return new IListIterator<T>(this);
+  }
+
+  // returns if this is empty
+  public boolean isEmpty() {
+    return false;
+  }
+}
+
+// iterates through a List of data
+class IListIterator<T> implements Iterator<T> {
+  IList<T> alist;
+
+  IListIterator(IList<T> alist) {
+    this.alist = alist;
+  }
+
+  // determines if the list has more elements
+  public boolean hasNext() {
+    return !alist.isEmpty();
+  }
+
+  // returns the next value and continues along the list
+  // mutates alist to be the rest
+  public T next() {
+    ConsList<T> temp = (ConsList<T>) this.alist;
+    this.alist = temp.rest;
+    return temp.first;
+  }
+
+  // ERROR
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
+}
+
+// Represents a single square of the game area
+class Cell {
+  // represents absolute height of this cell, in feet
+  double height;
+  // In logical coordinates, with the origin at the top-left corner of the scren
+  int x;
+  int y;
+  // the four adjacent cells to this one
+  Cell left;
+  Cell top;
+  Cell right;
+  Cell bottom;
+  // reports whether this cell is flooded or not
+  boolean isFlooded;
+
+  // constructs a Cell given a double height, int x/y
+  // presets isFlooded to be false and the adjacent cells to be null
+  Cell(double height, int x, int y) {
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.isFlooded = false;
+    this.left = this;
+    this.right = this;
+    this.top = this;
+    this.bottom = this;
+  }
+
+  // determines if this cell should have a cell above it
+  boolean hasTop() {
+    return this.y > 0;
+  }
+
+  // determines if this cell should have a cell below it
+  boolean hasBottom() {
+    return this.y < ForbiddenIslandWorld.ISLAND_SIZE;
+  }
+
+  // determines if this cell should have a cell to the left of it
+  boolean hasLeft() {
+    return this.x > 0;
+  }
+
+  // determines if this cell should have a cell to the right of it
+  boolean hasRight() {
+    return this.x < ForbiddenIslandWorld.ISLAND_SIZE;
+  }
+
+  // draw the cell onto the given WorldScene
+  void cellImage(WorldScene bg, int waterHeight) {
+    Color c;
+    if (this.isFlooded) {
+      c = new Color(0, 0, (int) (128 - (waterHeight - (int) this.height)));
+    }
+    else {
+      if (waterHeight > (int) this.height) {
+        c = new Color((int) ((waterHeight - this.height) / (waterHeight + this.height) * 255),
+            (int) ((this.height + (ForbiddenIslandWorld.ISLAND_SIZE / 2))
+                / ForbiddenIslandWorld.ISLAND_SIZE * 255),
+            0);
+      }
+      else {
+        c = new Color((int) ((this.height / (ForbiddenIslandWorld.ISLAND_SIZE / 2)) * 255),
+            (int) ((this.height + (ForbiddenIslandWorld.ISLAND_SIZE / 2))
+                / ForbiddenIslandWorld.ISLAND_SIZE * 255),
+            (int) ((this.height / (ForbiddenIslandWorld.ISLAND_SIZE / 2)) * 255));
+      }
+    }
+    bg.placeImageXY(new RectangleImage(10, 10, "solid", c), this.x * 10 + 5, this.y * 10 + 5);
+  }
+
+  // is there a path between this cell and the given one?
+  boolean hasPathTo(Cell that) {
+    Stack<Cell> worklist = new Stack<Cell>();
+    ArrayList<Cell> visited = new ArrayList<Cell>();
+
+    worklist.add(this);
+    while (!worklist.isEmpty()) {
+      Cell current = worklist.pop();
+      if (current.equals(that)) {
+        return true;
+      }
+      visited.add(current);
+      if (!current.left.isFlooded && !visited.contains(current.left)) {
+        worklist.add(current.left);
+      }
+      if (!current.right.isFlooded && !visited.contains(current.right)) {
+        worklist.add(current.right);
+      }
+      if (!current.top.isFlooded && !visited.contains(current.top)) {
+        worklist.add(current.top);
+      }
+      if (!current.bottom.isFlooded && !visited.contains(current.bottom)) {
+        worklist.add(current.bottom);
+      }
+    }
+    return false;
+  }
+}
+
+// to represent cells that are not conventionally traversable
+class OceanCell extends Cell {
+
+  OceanCell(int x, int y) {
+    super(0.0, x, y);
+    this.isFlooded = true;
+  }
+
+// draw the ocean cells
+  void cellImage(WorldScene bg, int waterHeight) {
+    bg.placeImageXY(new RectangleImage(10, 10, "solid", new Color(0, 0, 128)), this.x * 10 + 5,
+        this.y * 10 + 5);
+  }
+}
+
+// to represent objects placed onto cells
+class APiece {
+  Cell cell;
+
+  APiece(Cell cell) {
+    this.cell = cell;
+  }
+}
+
+// to represent the Scuba piece of equipment
+class Scuba extends APiece {
+
+  // determine whether the scuba is picked up or not
+  boolean pickedUp;
+
+  Scuba(Cell cell) {
+    super(cell);
+    this.pickedUp = false;
+  }
+
+  // draw the scuba onto bg
+  void drawScuba(WorldScene bg) {
+    if (!this.pickedUp) {
+      bg.placeImageXY(new FromFileImage("./src/scuba.png"), this.cell.x * 10 + 5,
+          this.cell.y * 10 + 5);
+    }
+  }
+
+}
+
+// to represent the player
+class Player extends APiece {
+  boolean hasScuba;
+  boolean useScuba;
+
+  Player(Cell cell) {
+    super(cell);
+    this.hasScuba = false;
+    this.useScuba = false;
+  }
+
+// place the player onto bg
+  void drawPlayer(WorldScene bg) {
+    bg.placeImageXY(new FromFileImage("./src/pilot-icon.png"), this.cell.x * 10 + 5,
+        this.cell.y * 10 + 5);
+  }
+
+  // keyEvent for moving the player
+  void move(String dir) {
+    if (dir.equals("left")) {
+      this.cell = this.cell.left;
+    }
+    if (dir.equals("right")) {
+      this.cell = this.cell.right;
+    }
+    if (dir.equals("up")) {
+      this.cell = this.cell.top;
+    }
+    if (dir.equals("down")) {
+      this.cell = this.cell.bottom;
+    }
+  }
+}
+
+// objective items to get
+class Target extends APiece {
+  // constructor
+  Target(Cell below) {
+    super(below);
+  }
+
+  // EFFECT: draws the Target onto the given bg
+  void drawTarget(WorldScene bg) {
+    bg.placeImageXY(new CircleImage(5, "solid", Color.ORANGE), this.cell.x * 10 + 5,
+        this.cell.y * 10 + 5);
+  }
+
+  // returns if this is a helicopter target (final target)
+  boolean isFinalTarget() {
+    return false;
+  }
+
+}
+
+// to represent the helicopter
+class HelicopterTarget extends Target {
+  // constructor
+  HelicopterTarget(Cell below) {
+    super(below);
+  }
+
+  // EFFECT: draws the HelicopterTarget onto the given bg
+  void drawTarget(WorldScene bg) {
+    bg.placeImageXY(new FromFileImage("./src/helicopter.png"), this.cell.x * 10 + 5,
+        this.cell.y * 10 + 5);
+  }
+
+  // overrides the default isFinalTarget : this is the final target
+  boolean isFinalTarget() {
+    return true;
+  }
+
+}
+
+class ForbiddenIslandWorld extends World {
+
+  // 64 x 64 size constant, access with ForbiddenIslandWorld.ISLAND_SIZE
+  static final int ISLAND_SIZE = 64;
+  // All the cells of the game, including the ocean
+  IList<Cell> board;
+  // the current height of the ocean
+  int waterHeight;
+  // keeps track of the current time
+  int tick;
+  // to represent the player
+  Player player;
+  // the scuba gear
+  Scuba scuba;
+  // number of targets
+  int numTargets;
+  // list of items to collect
+  ArrayList<Target> pieces;
+  // keeps track of how many steps have been taken so far
+  int steps;
+  // keeps track of how long the scuba oxygen will last
+  int scubaTimer;
+
+  // constructs a basic ForbiddenIslandWorld
+  ForbiddenIslandWorld() {
+    this.board = new MtList<Cell>();
+    this.waterHeight = 0;
+    this.tick = 0;
+    this.numTargets = 5;
+    this.pieces = new ArrayList<Target>();
+    this.steps = 0;
+    this.scubaTimer = 0;
+  }
+
+  // constructor takes in a number of pieces to collect
+  ForbiddenIslandWorld(int numPieces) {
+    this.board = new MtList<Cell>();
+    this.waterHeight = 0;
+    this.tick = 0;
+    this.numTargets = numPieces;
+    this.pieces = new ArrayList<Target>();
+    this.steps = 0;
+    this.scubaTimer = 0;
+  }
+
+  // given a 2D array of heights, assign them to the board of cells
+  void assignToBoard(ArrayList<ArrayList<Double>> heights) {
+    ArrayList<ArrayList<Cell>> grid = this.generateCellGrid(heights);
+    connectCells(grid);
+    this.pieces = new ArrayList<Target>();
+    this.board = new MtList<Cell>();
+    for (int x = 0; x <= ForbiddenIslandWorld.ISLAND_SIZE; x += 1) {
+      for (int y = 0; y <= ForbiddenIslandWorld.ISLAND_SIZE; y += 1) {
+        this.board = new ConsList<Cell>(grid.get(x).get(y), this.board);
+      }
+    }
+    this.updatePieces(this.numTargets, grid);
+  }
+
+  // generates the heights in a 2D array for a perfectly symmetrical mountain
+  ArrayList<ArrayList<Double>> generatePerfectHeights() {
+    ArrayList<ArrayList<Double>> result = new ArrayList<ArrayList<Double>>();
+    for (int x = 0; x <= ForbiddenIslandWorld.ISLAND_SIZE; x += 1) {
+      ArrayList<Double> col = new ArrayList<Double>();
+      for (int y = 0; y <= ForbiddenIslandWorld.ISLAND_SIZE; y += 1) {
+        col.add((double) ForbiddenIslandWorld.ISLAND_SIZE / 2 - this.distanceToCenter(x, y));
+      }
+      result.add(col);
+    }
+    return result;
+  }
+
+  // generates the heights in a 2D array for an island with random heights
+  ArrayList<ArrayList<Double>> generateRandomHeights() {
+    ArrayList<ArrayList<Double>> result = new ArrayList<ArrayList<Double>>();
+    for (int x = 0; x <= ForbiddenIslandWorld.ISLAND_SIZE; x += 1) {
+      ArrayList<Double> col = new ArrayList<Double>();
+      for (int y = 0; y <= ForbiddenIslandWorld.ISLAND_SIZE; y += 1) {
+        if (this.distanceToCenter(x, y) >= (ForbiddenIslandWorld.ISLAND_SIZE / 2)) {
+          col.add(0.0);
+        }
+        else {
+          col.add(Math.floor(Math.random() * ForbiddenIslandWorld.ISLAND_SIZE / 2) + 1);
+        }
+      }
+      result.add(col);
+    }
+    return result;
+  }
+
+  // generate a random terrain island
+  ArrayList<ArrayList<Double>> generateRandomTerrain() {
+    ArrayList<ArrayList<Double>> result = new ArrayList<ArrayList<Double>>();
+    for (int x = 0; x <= ForbiddenIslandWorld.ISLAND_SIZE; x++) {
+      ArrayList<Double> row = new ArrayList<Double>();
+      for (int y = 0; y <= ForbiddenIslandWorld.ISLAND_SIZE; y += 1) {
+        row.add(0.0);
+      }
+      result.add(row);
+    }
+
+    int middle = ForbiddenIslandWorld.ISLAND_SIZE / 2;
+
+    Posn tl = new Posn(0, 0);
+    Posn m = new Posn(middle, middle);
+    Posn br = new Posn(ForbiddenIslandWorld.ISLAND_SIZE, ForbiddenIslandWorld.ISLAND_SIZE);
+    Posn t = new Posn(tl.x, m.y);
+    Posn r = new Posn(m.x, br.y);
+    Posn l = new Posn(m.x, tl.y);
+    Posn b = new Posn(br.x, m.y);
+
+    result.get(t.x).set(t.y, 1.0);
+    result.get(l.x).set(l.y, 1.0);
+    result.get(b.x).set(b.y, 1.0);
+    result.get(r.x).set(r.y, 1.0);
+    result.get(m.x).set(m.x, (double) middle);
+
+    this.randomProcedure(result, tl, m);
+    this.randomProcedure(result, t, r);
+    this.randomProcedure(result, l, b);
+    this.randomProcedure(result, m, br);
+    return result;
+  }
+
+  // set the middle values to be partly random (random + average of corners)
+  void randomProcedure(ArrayList<ArrayList<Double>> input, Posn tl, Posn br) {
+    if ((br.x - tl.x) > 1) {
+      Posn tr = new Posn(tl.x, br.y);
+      Posn bl = new Posn(br.x, tl.y);
+
+      int length = br.x - tl.x;
+
+      int middle = length / 2;
+
+      Posn t = new Posn(tl.x, tl.y + middle);
+      Posn b = new Posn(br.x, br.y - middle);
+      Posn l = new Posn(tl.x + middle, tl.y);
+      Posn r = new Posn(br.x - middle, br.y);
+
+      Posn m = new Posn(l.x, t.y);
+
+      double tlHeight = input.get(tl.x).get(tl.y);
+      double trHeight = input.get(tr.x).get(tr.y);
+      double blHeight = input.get(bl.x).get(bl.y);
+      double brHeight = input.get(br.x).get(br.y);
+
+      double tHeight = (double) (((int) ((Math.random() - .5) * length)
+          + ((int) tlHeight + (int) trHeight) / 2));
+      double bHeight = (double) (((int) ((Math.random() - .5) * length)
+          + ((int) blHeight + (int) brHeight) / 2));
+      double lHeight = (double) (((int) ((Math.random() - .5) * length)
+          + ((int) tlHeight + (int) blHeight) / 2));
+      double rHeight = (double) (((int) ((Math.random() - .5) * length)
+          + ((int) trHeight + (int) brHeight) / 2));
+
+      double mHeight = (double) (((int) ((Math.random() - .5) * length)
+          + ((int) tlHeight + (int) blHeight + (int) trHeight + (int) brHeight) / 4));
+
+      if (input.get(t.x).get(t.y) == 0) {
+        if (tHeight > 32.0) {
+          input.get(t.x).set(t.y, 31.0);
+        }
+        else {
+          input.get(t.x).set(t.y, tHeight);
+        }
+      }
+
+      if (input.get(b.x).get(b.y) == 0) {
+        if (bHeight >= 32) {
+          input.get(b.x).set(b.y, 31.0);
+        }
+        else {
+          input.get(b.x).set(b.y, bHeight);
+        }
+      }
+
+      if (input.get(l.x).get(l.y) == 0) {
+        if (lHeight > 32.0) {
+          input.get(l.x).set(l.y, 31.0);
+        }
+        else {
+          input.get(l.x).set(l.y, lHeight);
+        }
+      }
+
+      if (input.get(r.x).get(r.y) == 0) {
+        if (rHeight > 32.0) {
+          input.get(r.x).set(r.y, 31.0);
+        }
+        else {
+          input.get(r.x).set(r.y, rHeight);
+        }
+      }
+
+      if (mHeight > 32.0) {
+        input.get(m.x).set(m.y, 31.0);
+      }
+      else {
+        input.get(m.x).set(m.y, mHeight);
+      }
+
+      this.randomProcedure(input, tl, m);
+      this.randomProcedure(input, t, r);
+      this.randomProcedure(input, l, b);
+      this.randomProcedure(input, m, br);
+    }
+  }
+
+  // given an ArrayList<Double>, construct a 2D array of Cells
+  ArrayList<ArrayList<Cell>> generateCellGrid(ArrayList<ArrayList<Double>> heights) {
+    ArrayList<ArrayList<Cell>> result = new ArrayList<ArrayList<Cell>>();
+    for (int x = 0; x <= ForbiddenIslandWorld.ISLAND_SIZE; x += 1) {
+      ArrayList<Cell> col = new ArrayList<Cell>();
+      for (int y = 0; y <= ForbiddenIslandWorld.ISLAND_SIZE; y += 1) {
+        double tempHeight = heights.get(x).get(y);
+        if (tempHeight <= 0) {
+          col.add(new OceanCell(x, y));
+        }
+        else {
+          col.add(new Cell(tempHeight, x, y));
+        }
+      }
+      result.add(col);
+    }
+    return result;
+  }
+
+  // modify the ArrayList to make the cells connected to their neighbors
+  void connectCells(ArrayList<ArrayList<Cell>> cells) {
+    for (int x = 0; x <= ForbiddenIslandWorld.ISLAND_SIZE; x += 1) {
+      for (int y = 0; y <= ForbiddenIslandWorld.ISLAND_SIZE; y += 1) {
+        Cell temp = cells.get(x).get(y);
+        if (temp.hasBottom()) {
+          temp.bottom = cells.get(x).get(y + 1);
+        }
+        if (temp.hasTop()) {
+          temp.top = cells.get(x).get(y - 1);
+        }
+        if (temp.hasLeft()) {
+          temp.left = cells.get(x - 1).get(y);
+        }
+        if (temp.hasRight()) {
+          temp.right = cells.get(x + 1).get(y);
+        }
+      }
+    }
+  }
+
+  // Manhattan Distance
+  double distanceToCenter(int x, int y) {
+    int halfSize = ForbiddenIslandWorld.ISLAND_SIZE / 2;
+    return (double) ((Math.abs(halfSize - x) + Math.abs(halfSize - y)));
+  }
+
+  // randomly generate a list of n - 1 targets
+  // generate helicopter, player position
+  void updatePieces(int numPieces, ArrayList<ArrayList<Cell>> grid) {
+    ArrayList<Cell> occupied = new ArrayList<Cell>();
+    Cell highest = this.getHighestCell(grid);
+    this.pieces.add(new HelicopterTarget(highest));
+    occupied.add(highest);
+    Cell playerCell = this.updatePlayer(occupied, grid, highest);
+    this.scuba = new Scuba(this.notOccupied(occupied, grid, playerCell));
+    for (int i = 0; i < numPieces - 1; i += 1) {
+      Cell c = this.notOccupied(occupied, grid, playerCell);
+      this.pieces.add(new Target(c));
+    }
+  }
+
+  // puts the player onto a random cell that has a path to the helicopter cell
+  // and returns the cell
+  // adds the player's cell into occupied
+  Cell updatePlayer(ArrayList<Cell> occupied, ArrayList<ArrayList<Cell>> grid,
+      Cell helicopterCell) {
+    Cell playerCell = this.notOccupied(occupied, grid, helicopterCell);
+    this.player = new Player(playerCell);
+    occupied.add(playerCell);
+    return playerCell;
+  }
+
+  // returns a cell that is not currently occupied and has a path to a given cell
+  // given a list of occupied cells, a grid, and the connecting cell
+  // adds the generated cell to the occupied list
+  Cell notOccupied(ArrayList<Cell> occupied, ArrayList<ArrayList<Cell>> grid, Cell playerCell) {
+    int x = (int) (Math.random() * ForbiddenIslandWorld.ISLAND_SIZE + 1);
+    int y = (int) (Math.random() * ForbiddenIslandWorld.ISLAND_SIZE + 1);
+    while (grid.get(x).get(y).isFlooded || occupied.contains(grid.get(x).get(y))
+        || !playerCell.hasPathTo(grid.get(x).get(y))) {
+      x = (int) (Math.random() * ForbiddenIslandWorld.ISLAND_SIZE + 1);
+      y = (int) (Math.random() * ForbiddenIslandWorld.ISLAND_SIZE + 1);
+    }
+    occupied.add(grid.get(x).get(y));
+    return grid.get(x).get(y);
+  }
+
+  // returns the cell with the greatest height within an
+  // ArrayList<ArrayList<Cell>>
+  Cell getHighestCell(ArrayList<ArrayList<Cell>> grid) {
+    Cell highest = new Cell(0.0, 0, 0);
+    for (ArrayList<Cell> col : grid) {
+      for (Cell c : col) {
+        if (c.height > highest.height) {
+          highest = c;
+        }
+      }
+    }
+    return highest;
+  }
+
+  // draws the scene with all of the cells in their place
+  public WorldScene makeScene() {
+    WorldScene bg = getEmptyScene();
+    for (Cell c : this.board) {
+      c.cellImage(bg, this.waterHeight);
+    }
+
+    for (Target t : this.pieces) {
+      t.drawTarget(bg);
+    }
+    this.player.drawPlayer(bg);
+    this.scuba.drawScuba(bg);
+    this.drawScoreBoard(bg);
+    if (this.stillPlaying()) {
+      return bg;
+    }
+    else {
+      if (this.gameWon()) {
+        bg.placeImageXY(new TextImage("You won! Play again?", 50, Color.BLACK), 325, 325);
+        return bg;
+      }
+      else {
+        bg.placeImageXY(new TextImage("You died. Play again?", 45, Color.BLACK), 325, 325);
+        return bg;
+      }
+    }
+  }
+
+  // draw the ScoreBoard
+  void drawScoreBoard(WorldScene bg) {
+    int totalHeight = (ForbiddenIslandWorld.ISLAND_SIZE + 1) * 10;
+    int middleOfColumn = totalHeight + 100;
+
+    WorldImage the = new TextImage("The", 30, Color.BLACK);
+    WorldImage forbidden = new TextImage("Forbidden", 30, Color.BLACK);
+    WorldImage island = new TextImage("Island", 30, Color.BLACK);
+
+    WorldImage timer = new TextImage(
+        "Time: " + (((ForbiddenIslandWorld.ISLAND_SIZE / 2) * 10) - (this.tick / 25) + 10), 20,
+        Color.BLACK);
+
+    WorldImage steps = new TextImage("Steps Taken: " + this.steps, 15, Color.BLACK);
+
+    WorldImage obtainedScuba;
+    if (this.player.hasScuba) {
+      obtainedScuba = new TextImage("Scuba?: Yes", 20, Color.BLACK);
+    }
+    else {
+      obtainedScuba = new TextImage("Scuba?: No", 20, Color.BLACK);
+    }
+
+    //
+    WorldImage usingScuba;
+    if (this.player.useScuba) {
+      usingScuba = new TextImage("Using Scuba: On", 20, Color.BLACK);
+    }
+    else {
+      usingScuba = new TextImage("Using Scuba: Off", 20, Color.BLACK);
+    }
+
+    WorldImage scubaTimer = new TextImage("Scuba Oxygen: " + this.scubaTimer, 20, Color.BLACK);
+    WorldImage keys1 = new TextImage("t = Play New Terrain", 9, Color.BLACK);
+    WorldImage keys2 = new TextImage("r = Play New Random", 9, Color.BLACK);
+    WorldImage keys3 = new TextImage("m = Play New Mountain", 9, Color.BLACK);
+    WorldImage keys4 = new TextImage("s = Use Scuba", 9, Color.BLACK);
+
+    bg.placeImageXY(the, middleOfColumn, 30);
+    bg.placeImageXY(forbidden, middleOfColumn, 65);
+    bg.placeImageXY(island, middleOfColumn, 100);
+
+    bg.placeImageXY(timer, middleOfColumn, 140);
+    bg.placeImageXY(steps, middleOfColumn, 160);
+    bg.placeImageXY(obtainedScuba, middleOfColumn, 180);
+    bg.placeImageXY(usingScuba, middleOfColumn, 200);
+    bg.placeImageXY(scubaTimer, middleOfColumn, 220);
+    bg.placeImageXY(keys1, middleOfColumn, 240);
+    bg.placeImageXY(keys2, middleOfColumn, 250);
+    bg.placeImageXY(keys3, middleOfColumn, 260);
+    bg.placeImageXY(keys4, middleOfColumn, 270);
+  }
+
+  // onKeyEvent
+  public void onKeyEvent(String ke) {
+    if (ke.equals("t")) {
+      this.assignToBoard(this.generateRandomTerrain());
+      this.waterHeight = 0;
+      this.tick = 0;
+    }
+    if (ke.equals("m")) {
+      this.assignToBoard(this.generatePerfectHeights());
+      this.waterHeight = 0;
+      this.tick = 0;
+    }
+    if (ke.equals("r")) {
+      this.assignToBoard(this.generateRandomHeights());
+      this.waterHeight = 0;
+      this.tick = 0;
+    }
+
+    if (this.stillPlaying()) {
+      if (ke.equals("left") && (!this.player.cell.left.isFlooded || this.player.useScuba)) {
+        player.move("left");
+        this.steps += 1;
+      }
+      if (ke.equals("right") && (!this.player.cell.right.isFlooded || this.player.useScuba)) {
+        player.move("right");
+        this.steps += 1;
+      }
+      if (ke.equals("up") && (!this.player.cell.top.isFlooded || this.player.useScuba)) {
+        player.move("up");
+        this.steps += 1;
+      }
+      if (ke.equals("down") && (!this.player.cell.bottom.isFlooded || this.player.useScuba)) {
+        player.move("down");
+        this.steps += 1;
+      }
+      if (ke.equals("s") && this.player.hasScuba) {
+        if (this.player.useScuba) {
+          this.player.useScuba = false;
+          this.scubaTimer = 0;
+        }
+        else {
+          this.player.useScuba = true;
+          this.scubaTimer = 250;
+        }
+      }
+    }
+  }
+
+  // onTick
+  public void onTick() {
+    if (this.stillPlaying()) {
+      this.tick += 1;
+      if (this.tick % 250 == 0) {
+        this.waterHeight += 1;
+        ArrayList<Cell> toBeFlooded = new ArrayList<Cell>();
+        for (Cell c : this.board) {
+          if (!c.isFlooded && this.waterHeight > (int) c.height
+              && (c.top.isFlooded || c.bottom.isFlooded || c.left.isFlooded || c.right.isFlooded)) {
+            toBeFlooded.add(c);
+          }
+        }
+        for (Cell c : toBeFlooded) {
+          c.isFlooded = true;
+        }
+      }
+      ArrayList<Target> updatedPieces = new ArrayList<Target>();
+      for (Target t : this.pieces) {
+        if (!this.player.cell.equals(t.cell) || (t.isFinalTarget() && this.pieces.size() > 1)) {
+          updatedPieces.add(t);
+        }
+      }
+      this.pieces = updatedPieces;
+      if (this.player.cell.equals(this.scuba.cell)) {
+        this.player.hasScuba = true;
+        this.scuba.pickedUp = true;
+      }
+      if (this.scubaTimer > 0) {
+        this.scubaTimer -= 1;
+      }
+      else {
+        this.player.useScuba = false;
+      }
+    }
+  }
+
+  // returns true if the game is still running
+  boolean stillPlaying() {
+    return (!this.player.cell.isFlooded || this.player.useScuba) && this.pieces.size() > 0;
+  }
+
+  // returns true if the game has been won (picked up all pieces)
+  boolean gameWon() {
+    return (this.pieces.size() == 0);
+  }
+
+}
+
+// for testing and making examples of ForbiddenIslandWorld
+class ExamplesForbiddenIsland {
+  ForbiddenIslandWorld normal = new ForbiddenIslandWorld(10);
+  ForbiddenIslandWorld random = new ForbiddenIslandWorld(10);
+  ForbiddenIslandWorld terrain = new ForbiddenIslandWorld(10);
+  ForbiddenIslandWorld noBoard = new ForbiddenIslandWorld();
+  IList<Integer> mt;
+  IList<Integer> oneTwoThree;
+  IListIterator<Integer> iterMt;
+  IListIterator<Integer> iterCons;
+  ArrayList<ArrayList<Double>> perfectHeights;
+  ArrayList<ArrayList<Double>> randomHeights;
+  ArrayList<ArrayList<Double>> terrainHeights;
+  int randomX;
+  int randomY;
+  Cell test1;
+  Cell test1t;
+  Cell test1b;
+  Cell test1l;
+  Cell test1r;
+
+  // initialize our data for tests
+  void init() {
+    this.perfectHeights = this.normal.generatePerfectHeights();
+    this.randomHeights = this.random.generateRandomHeights();
+    this.terrainHeights = this.terrain.generateRandomTerrain();
+    this.normal.assignToBoard(this.perfectHeights);
+    this.random.assignToBoard(this.randomHeights);
+    this.terrain.assignToBoard(this.terrainHeights);
+    this.mt = new MtList<Integer>();
+    this.oneTwoThree = new ConsList<Integer>(1,
+        new ConsList<Integer>(2, new ConsList<Integer>(3, this.mt)));
+    this.iterMt = new IListIterator<Integer>(this.mt);
+    this.iterCons = new IListIterator<Integer>(this.oneTwoThree);
+
+    this.test1t = new Cell(1, 0, 1);
+    this.test1b = new Cell(1, 2, 1);
+    this.test1l = new Cell(1, 1, 0);
+    this.test1r = new Cell(1, 2, 0);
+
+    this.test1t.isFlooded = true;
+    this.test1b.isFlooded = true;
+    this.test1l.isFlooded = true;
+    this.test1r.isFlooded = true;
+
+    this.test1 = new Cell(1, 1, 1);
+    this.test1.top = this.test1t;
+    this.test1.bottom = this.test1b;
+    this.test1.left = this.test1l;
+    this.test1.right = this.test1r;
+  }
+  
+  // testing the hasNext method
+  void testHasNext(Tester t) {
+      this.init();
+      t.checkExpect(this.iterMt.hasNext(), false);
+      t.checkExpect(this.iterCons.hasNext(), true);
+      t.checkExpect(this.iterCons.next(), 1);
+      t.checkExpect(this.iterCons.hasNext(), true);
+      t.checkExpect(this.iterCons.next(), 2);
+      t.checkExpect(this.iterCons.hasNext(), true);
+      t.checkExpect(this.iterCons.next(), 3);
+      t.checkExpect(this.iterCons.hasNext(), false);
+  }
+
+  // testing the next method
+  void testNext(Tester t) {
+      this.init();
+      t.checkExpect(this.iterCons.next(), 1);
+      t.checkExpect(this.iterCons.next(), 2);
+      t.checkExpect(this.iterCons.next(), 3);
+  }
+
+  // testing the remove method
+  void testRemove(Tester t) {
+      this.init();
+      t.checkException(new UnsupportedOperationException(),
+              this.iterMt, "remove");
+      t.checkException(new UnsupportedOperationException(),
+              this.iterCons, "remove");
+
+  }
+
+  // testing the isEmpty method
+  void testIsEmpty(Tester t) {
+      this.init();
+      t.checkExpect(this.mt.isEmpty(), true);
+      t.checkExpect(this.oneTwoThree.isEmpty(), false);
+  }
+
+  // testing the generatePerfectHeights method
+  void testGeneratePerfectHeights(Tester t) {
+      this.init();
+      int x = 0;
+      while (x < 10) {
+          int randomX = (int) (Math.random() * 
+                  this.perfectHeights.size());
+          int randomY = (int) (Math.random() * 
+                  this.perfectHeights.get(randomX).size());
+          t.checkExpect(this.perfectHeights.get(randomX).get(randomY), 
+                  (double)ForbiddenIslandWorld.ISLAND_SIZE / 2 - 
+                  this.normal.distanceToCenter(randomX, randomY));
+          x += 1;
+      }
+  }
+
+  // testing the generateRandomHeights method
+  void testGenerateRandomHeights(Tester t) {
+      this.init();
+      int x = 0;
+      while (x < 10) {
+          int randomX = (int) (Math.random() * 
+                  this.randomHeights.size());
+          int randomY = (int) (Math.random() * 
+                  this.randomHeights.get(randomX).size());
+          t.checkRange(this.randomHeights.get(randomX).get(randomY).intValue(), 
+                  0, 33);
+          x += 1;
+      }
+  }
+
+  // testing the generateCellGrid method
+  void testGenerateCellGrid(Tester t) {
+      this.init();
+      ArrayList<ArrayList<Cell>> cellGrid = 
+              this.normal.generateCellGrid(this.perfectHeights);
+      int x = 0;
+      while (x < 10) {
+          int randomX = (int) (Math.random() * 
+                  this.randomHeights.size());
+          int randomY = (int) (Math.random() * 
+                  this.randomHeights.get(randomX).size());
+          Cell randomCell = cellGrid.get(randomX).get(randomY);
+          if (randomCell.height > 0) {
+              t.checkExpect(randomCell instanceof Cell, true);
+              t.checkExpect(randomCell instanceof OceanCell, false);
+          }
+          else {
+              t.checkExpect(randomCell instanceof OceanCell, true);
+          }
+          x += 1;
+      }
+  }
+
+  // testing the distanceToCenter method
+  void testDistanceToCenter(Tester t) {
+      this.init();
+      int x = 0;
+      while (x < 10) {
+          int randomX = (int) (Math.random() * 100);
+          int randomY = (int) (Math.random() * 100);
+          t.checkExpect(this.normal.distanceToCenter(randomX, randomY), 
+                  (double)((Math.abs((ForbiddenIslandWorld.ISLAND_SIZE / 2)
+                          - randomX) + 
+                          Math.abs((ForbiddenIslandWorld.ISLAND_SIZE / 2)
+                                  - randomY))));
+          x += 1;
+      }
+  }
+
+  // testing the move method
+  void testMove(Tester t) {
+      this.init();
+      Cell c = this.terrain.player.cell;
+      t.checkExpect(this.terrain.player.cell.equals(c), true);
+      this.terrain.player.move("up");
+      t.checkExpect(this.terrain.player.cell.equals(c.top), true);
+      this.terrain.player.move("down");
+      t.checkExpect(this.terrain.player.cell.equals(c), true);
+      this.terrain.player.move("left");
+      t.checkExpect(this.terrain.player.cell.equals(c.left), true);
+      this.terrain.player.move("right");
+      t.checkExpect(this.terrain.player.cell.equals(c), true);
+  }
+
+  // testing the drawPlayer method
+  void testDrawPlayer(Tester t) {
+      this.init();
+      Player p = this.random.player;
+      WorldScene bg = new WorldScene(650, 650);
+      WorldScene bg2 = new WorldScene(650, 650);
+      bg2.placeImageXY(new FromFileImage("./src/pilot-icon.png"), 
+              p.cell.x * 10 + 5, p.cell.y * 10 + 5);
+      p.drawPlayer(bg);
+      t.checkExpect(bg, bg2);
+  }
+
+  // testing the isFinalTarget method
+  void testIsFinalTarget(Tester t) {
+      Target not = new Target(new Cell(0.0, 0, 0));
+      Target is = new HelicopterTarget(new Cell(0.0, 1, 1));
+      t.checkExpect(not.isFinalTarget(), false);
+      t.checkExpect(is.isFinalTarget(), true);
+  }
+
+  // testing the getHighestCell method
+  void testGetHighestCell(Tester t) {
+      this.init();
+      ArrayList<ArrayList<Cell>> grid = this.normal.generateCellGrid(
+              this.perfectHeights);
+      t.checkExpect(this.normal.getHighestCell(grid), 
+              grid.get(32).get(32));
+      t.checkExpect(this.normal.getHighestCell(grid).height, 
+              (double) ForbiddenIslandWorld.ISLAND_SIZE / 2);
+  }
+
+  // testing the hasPathTo method
+  void testHasPathTo(Tester t) {
+      this.init();
+      Cell playerCell = this.normal.player.cell;
+      for (Target piece : this.normal.pieces) {
+          t.checkExpect(playerCell.hasPathTo(piece.cell), true);
+      }
+      t.checkExpect(playerCell.hasPathTo(new Cell(0.0, 0, 0)), false);
+  }
+
+  // testing the updatePieces method
+  void testUpdatePieces(Tester t) {
+      this.init();
+      ArrayList<ArrayList<Double>> temp = this.randomHeights;
+      ArrayList<ArrayList<Cell>> connected = this.noBoard.generateCellGrid(temp);
+      this.noBoard.connectCells(connected);
+      this.noBoard.updatePieces(2, connected);
+      t.checkExpect(this.noBoard.pieces.get(0).isFinalTarget(), true);
+  }
+
+  // testing the updatePlayer method
+  void testUpdatePlayer(Tester t) {
+      this.init();
+      ArrayList<Cell> occupied = new ArrayList<Cell>();
+      ArrayList<ArrayList<Double>> temp = this.randomHeights;
+      ArrayList<ArrayList<Cell>> connected = this.noBoard.generateCellGrid(temp);
+      this.noBoard.connectCells(connected);
+      this.noBoard.updatePieces(1, connected);
+      occupied.add(this.noBoard.getHighestCell(connected));
+      Cell player = this.noBoard.updatePlayer(occupied, 
+              connected, occupied.get(0));
+      t.checkExpect(player.hasPathTo(occupied.get(0)), true);
+  }
+
+  // testing the notOccupied method
+  void testNotOccupied(Tester t) {
+      this.init();
+      ArrayList<Cell> occupied = new ArrayList<Cell>();
+      ArrayList<ArrayList<Double>> temp = this.randomHeights;
+      ArrayList<ArrayList<Cell>> connected = this.noBoard.generateCellGrid(temp);
+      this.noBoard.connectCells(connected);
+      this.noBoard.updatePieces(1, connected);
+      occupied.add(this.noBoard.getHighestCell(connected));
+      Cell player = this.noBoard.updatePlayer(occupied, 
+              connected, occupied.get(0));
+      Cell nonOccupiedCell = this.noBoard.notOccupied(occupied, connected, player);
+      t.checkExpect(nonOccupiedCell.hasPathTo(player), true);
+  }
+
+  // testing the stillPlaying method
+  void testStillPlaying(Tester t) {
+      this.init();
+      ArrayList<ArrayList<Double>> temp = this.randomHeights;
+      ArrayList<ArrayList<Cell>> connected = this.noBoard.generateCellGrid(temp);
+      this.noBoard.connectCells(connected);
+      this.noBoard.updatePieces(0, connected);
+      t.checkExpect(this.noBoard.stillPlaying(), true);
+      this.noBoard.player.cell.isFlooded = true;
+      t.checkExpect(this.noBoard.stillPlaying(), false);
+      this.noBoard.player.hasScuba = true;
+      this.noBoard.player.useScuba = true;
+      t.checkExpect(this.noBoard.stillPlaying(), true);
+      this.noBoard.scubaTimer = 0;
+      this.noBoard.onTick();
+      t.checkExpect(this.noBoard.stillPlaying(), false);
+  }
+  
+  // testing the gameWon method
+  void testGameWon(Tester t) {
+      this.init();
+      this.noBoard.pieces.add(new Target(new Cell(32, 32, 32)));
+      t.checkExpect(this.noBoard.gameWon(), false);
+      this.noBoard.pieces = new ArrayList<Target>();
+      t.checkExpect(this.noBoard.gameWon(), true);
+  }
+  
+  
+
+  // BigBang test
+  void testBigBang(Tester t) {
+    this.init();
+    this.terrain.bigBang(((ForbiddenIslandWorld.ISLAND_SIZE + 1) * 10) + 200,
+        ((ForbiddenIslandWorld.ISLAND_SIZE + 1) * 10), .04);
+    t.checkExpect(true, true);
+
+  }
+}

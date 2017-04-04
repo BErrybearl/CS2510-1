@@ -1,0 +1,4 @@
+(defunc push (e s)
+:ic (elementp e) (stackp s))
+:oc (stackp (push e s))
+

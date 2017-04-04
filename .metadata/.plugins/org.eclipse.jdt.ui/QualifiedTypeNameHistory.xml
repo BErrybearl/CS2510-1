@@ -5,4 +5,8 @@
 <fullyQualifiedTypeName name="java.awt.Color"/>
 <fullyQualifiedTypeName name="shortString"/>
 <fullyQualifiedTypeName name="tester.Tester"/>
+<fullyQualifiedTypeName name="javalib.worldimages.WorldImage"/>
+<fullyQualifiedTypeName name="java.lang.annotation.Target"/>
+<fullyQualifiedTypeName name="Utils.Stack"/>
+<fullyQualifiedTypeName name="tester.Utils"/>
 </qualifiedTypeNameHistroy>
