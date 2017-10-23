@@ -1,11 +1,5 @@
 import tester.Tester;
 
-// Assignment 2
-// Cumming Connor
-// connorc0405
-// Changzong  Liu 
-// changzongliu
-
 //to represent a List-of Att
 interface ILoAtt {
 
