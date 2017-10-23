@@ -1,11 +1,5 @@
 import tester.Tester;
 
-// Assignment 4 - Problem 2
-// Korandla Nihaal
-// nihaalrk
-// Liu Changzong
-// changzongliu
-
 //contains the ingredients for a cake recipe
 public class CakeRecipe {
 
