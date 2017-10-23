@@ -1,7 +1,3 @@
-// Assignment 1
-// Changzong Liu
-// changzongliu
-
 class Dog {
   String name;
   String breed;
