@@ -1,8 +1,3 @@
-
-// Assignment 3
-// Changzong Liu
-// changzong liu
-
 import tester.*;
 
 interface ILoString {
