@@ -1,7 +1,3 @@
-// Assignment 1
-// Changzong Liu
-// changzongliu
-
 interface IIceCream {
 
 }
