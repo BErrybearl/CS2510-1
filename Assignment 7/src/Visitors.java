@@ -1,11 +1,5 @@
 import tester.Tester;
 
-// Assignment 7
-// Cumming Connor
-// connorc0405
-// Liu Changzong
-// changzongliu
-
 // represent an arithmetic expression
 interface IArith {
 
